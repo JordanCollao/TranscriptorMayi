@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transcriptor · Audio y video a texto</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>📝</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff;
+    --bg-soft: #f7f7f7;
+    --bg-elevated: #ffffff;
+    --bg-hover: #f0f0f0;
+    --border: #e5e5e5;
+    --border-strong: #d4d4d4;
+    --text: #0a0a0a;
+    --text-muted: #6b6b6b;
+    --text-subtle: #9a9a9a;
+    --accent: #0a0a0a;
+    --accent-text: #ffffff;
+    --danger: #c4341c;
+    --danger-bg: #fdecea;
+    --success: #1a7340;
+    --success-bg: #e8f3ec;
+    --warning: #8a5a00;
+    --warning-bg: #fdf3d9;
+    --info: #1e4d8c;
+    --info-bg: #e8f0fa;
+    --shadow: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.06);
+    --radius: 8px;
+    --radius-lg: 12px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  [data-theme="dark"] {
+    --bg: #0d0d0d; --bg-soft: #161616; --bg-elevated: #1a1a1a; --bg-hover: #232323;
+    --border: #2a2a2a; --border-strong: #3a3a3a;
+    --text: #f5f5f5; --text-muted: #a0a0a0; --text-subtle: #6b6b6b;
+    --accent: #f5f5f5; --accent-text: #0a0a0a;
+    --danger: #f87171; --danger-bg: #2a1414;
+    --success: #4ade80; --success-bg: #142a1a;
+    --warning: #fbbf24; --warning-bg: #2a2114;
+    --info: #60a5fa; --info-bg: #14202a;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.5);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0d0d0d; --bg-soft: #161616; --bg-elevated: #1a1a1a; --bg-hover: #232323;
+      --border: #2a2a2a; --border-strong: #3a3a3a;
+      --text: #f5f5f5; --text-muted: #a0a0a0; --text-subtle: #6b6b6b;
+      --accent: #f5f5f5; --accent-text: #0a0a0a;
+      --danger: #f87171; --danger-bg: #2a1414;
+      --success: #4ade80; --success-bg: #142a1a;
+      --warning: #fbbf24; --warning-bg: #2a2114;
+      --info: #60a5fa; --info-bg: #14202a;
+      --shadow: 0 1px 2px rgba(0,0,0,0.4);
+      --shadow-lg: 0 4px 16px rgba(0,0,0,0.5);
+    }
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    transition: background var(--transition), color var(--transition);
+  }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  input, select, textarea { font-family: inherit; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-subtle); }
+
+  .app {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 100vh;
+  }
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .sidebar.open { display: flex; position: fixed; inset: 0; z-index: 100; width: 100%; }
+  }
+
+  .sidebar {
+    background: var(--bg-soft);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+  }
+  .sidebar-header {
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .logo-mark {
+    width: 28px;
+    height: 28px;
+    background: var(--accent);
+    color: var(--accent-text);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+  .btn-new {
+    margin: 16px 20px 0;
+    width: calc(100% - 40px);
+    padding: 10px 14px;
+    background: var(--accent);
+    color: var(--accent-text);
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: opacity var(--transition);
+  }
+  .btn-new:hover { opacity: 0.85; }
+
+  .history-section { flex: 1; overflow-y: auto; padding: 12px 12px 20px; }
+  .history-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-subtle);
+    padding: 12px 8px 8px;
+  }
+  .history-item {
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background var(--transition), color var(--transition);
+    margin-bottom: 2px;
+  }
+  .history-item:hover { background: var(--bg-hover); color: var(--text); }
+  .history-item.active { background: var(--bg-hover); color: var(--text); font-weight: 500; }
+  .history-item-title { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .history-item-delete { opacity: 0; padding: 2px; border-radius: 4px; transition: opacity var(--transition); }
+  .history-item:hover .history-item-delete { opacity: 0.6; }
+  .history-item-delete:hover { opacity: 1 !important; color: var(--danger); }
+  .history-empty { text-align: center; padding: 24px 16px; color: var(--text-subtle); font-size: 13px; }
+
+  .sidebar-footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .theme-toggle {
+    padding: 6px 10px;
+    border-radius: var(--radius);
+    font-size: 12px;
+    color: var(--text-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background var(--transition);
+  }
+  .theme-toggle:hover { background: var(--bg-hover); color: var(--text); }
+
+  .main { display: flex; flex-direction: column; min-height: 100vh; }
+  .topbar {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+  .menu-btn { display: none; padding: 8px; border-radius: var(--radius); }
+  @media (max-width: 900px) { .menu-btn { display: inline-flex; } }
+  .session-title {
+    font-size: 16px;
+    font-weight: 500;
+    background: transparent;
+    border: none;
+    padding: 4px 8px;
+    border-radius: var(--radius);
+    color: var(--text);
+    width: 100%;
+    max-width: 400px;
+    transition: background var(--transition);
+  }
+  .session-title:hover, .session-title:focus { background: var(--bg-hover); outline: none; }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    background: var(--bg-soft);
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .status-badge.recording { background: var(--danger-bg); color: var(--danger); }
+  .status-badge.recording .dot {
+    width: 6px; height: 6px; background: currentColor; border-radius: 50%;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+  }
+
+  .content {
+    flex: 1;
+    padding: 32px 24px;
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  /* ============ ONBOARDING / PERMISO ÚNICO ============ */
+  .onboard {
+    background: var(--bg-soft);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+  }
+  .onboard.hidden { display: none; }
+  .onboard h2 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .onboard p { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+  .permission-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: var(--bg);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    font-size: 13px;
+  }
+  .permission-status i { font-size: 18px; }
+  .permission-status.granted i { color: var(--success); }
+  .permission-status.denied i { color: var(--danger); }
+  .permission-status.pending i { color: var(--text-muted); }
+
+  /* ============ MODE TABS ============ */
+  .mode-tabs {
+    display: inline-flex;
+    background: var(--bg-soft);
+    padding: 4px;
+    border-radius: var(--radius-lg);
+    margin-bottom: 24px;
+    gap: 2px;
+  }
+  .mode-tab {
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all var(--transition);
+  }
+  .mode-tab.active { background: var(--bg); color: var(--text); box-shadow: var(--shadow); }
+
+  /* ============ DROPZONE ============ */
+  .dropzone {
+    border: 2px dashed var(--border-strong);
+    border-radius: var(--radius-lg);
+    padding: 48px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition);
+    background: var(--bg-soft);
+  }
+  .dropzone:hover, .dropzone.dragover {
+    border-color: var(--text);
+    background: var(--bg-hover);
+  }
+  .dropzone-icon { font-size: 40px; color: var(--text-muted); margin-bottom: 12px; display: block; }
+  .dropzone-title { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
+  .dropzone-subtitle { font-size: 13px; color: var(--text-muted); }
+
+  /* ============ MEDIA CARD (mejorado) ============ */
+  .media-card {
+    background: var(--bg-soft);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    display: none;
+  }
+  .media-card.visible { display: block; }
+
+  .media-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .media-icon-wrap {
+    width: 44px;
+    height: 44px;
+    background: var(--bg);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    font-size: 20px;
+  }
+  .media-meta { flex: 1; min-width: 0; }
+  .media-name { font-size: 14px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .media-size { font-size: 12px; color: var(--text-muted); }
+  .icon-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    transition: all var(--transition);
+  }
+  .icon-btn:hover { background: var(--bg-hover); color: var(--text); }
+
+  audio, video {
+    width: 100%;
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+  }
+  video { max-height: 280px; background: #000; }
+
+  /* CTA prominente después de cargar archivo */
+  .transcribe-cta {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background: var(--info-bg);
+    border-radius: var(--radius);
+    margin-top: 4px;
+  }
+  .cta-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .cta-text { flex: 1; min-width: 200px; font-size: 13px; color: var(--info); line-height: 1.5; }
+  .cta-btn {
+    padding: 12px 20px;
+    background: var(--accent);
+    color: var(--accent-text);
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: opacity var(--transition);
+    white-space: nowrap;
+  }
+  .cta-btn:hover { opacity: 0.85; }
+  .cta-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* ============ MIC PANEL ============ */
+  .mic-panel {
+    background: var(--bg-soft);
+    border-radius: var(--radius-lg);
+    padding: 32px 24px;
+    text-align: center;
+  }
+  .mic-icon-wrap {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 12px;
+    border-radius: 50%;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+    transition: all var(--transition);
+    position: relative;
+  }
+  .mic-icon-wrap.active { background: var(--accent); color: var(--accent-text); }
+  .mic-icon-wrap.active::before, .mic-icon-wrap.active::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    animation: ripple 2s ease-out infinite;
+    opacity: 0;
+  }
+  .mic-icon-wrap.active::after { animation-delay: 1s; }
+  @keyframes ripple {
+    0% { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(1.6); opacity: 0; }
+  }
+  .mic-icon-wrap i { font-size: 32px; }
+
+  .visualizer {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    margin-top: 16px;
+  }
+  .vbar {
+    width: 3px;
+    background: var(--text-muted);
+    border-radius: 2px;
+    height: 8px;
+    transition: height 80ms ease-out;
+  }
+
+  /* ============ MIC CONTROLS (solo en modo mic) ============ */
+  .mic-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 20px 0 24px;
+    align-items: center;
+  }
+
+  .btn {
+    padding: 9px 16px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all var(--transition);
+    white-space: nowrap;
+  }
+  .btn:hover:not(:disabled) { background: var(--bg-hover); border-color: var(--border-strong); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+  .btn-primary:hover:not(:disabled) { opacity: 0.85; background: var(--accent); }
+
+  .select {
+    padding: 9px 12px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 13px;
+    min-width: 140px;
+    cursor: pointer;
+  }
+  .select:hover, .select:focus { border-color: var(--border-strong); outline: none; }
+
+  .spacer { flex: 1; }
+
+  /* ============ STATS ============ */
+  .stats {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: var(--text-subtle);
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .stat { display: inline-flex; align-items: center; gap: 4px; }
+  .stat strong { color: var(--text); font-weight: 500; }
+  .lossy-warning {
+    display: none;
+    align-items: center;
+    gap: 4px;
+    color: var(--warning);
+    font-size: 11px;
+  }
+  .lossy-warning.visible { display: inline-flex; }
+
+  /* ============ TRANSCRIPT ============ */
+  .transcript-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: border-color var(--transition);
+  }
+  .transcript-card:focus-within { border-color: var(--border-strong); box-shadow: var(--shadow-lg); }
+  .transcript-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-soft);
+    flex-wrap: wrap;
+  }
+  .tool-btn {
+    padding: 6px 8px;
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all var(--transition);
+  }
+  .tool-btn:hover { background: var(--bg-hover); color: var(--text); }
+  .tool-divider { width: 1px; height: 16px; background: var(--border); margin: 0 4px; }
+
+  .transcript {
+    min-height: 280px;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 20px 24px;
+    font-size: 16px;
+    line-height: 1.75;
+    outline: none;
+  }
+  .transcript.empty::before {
+    content: attr(data-placeholder);
+    color: var(--text-subtle);
+    font-style: italic;
+  }
+  .transcript p { margin-bottom: 12px; }
+  .transcript p:last-child { margin-bottom: 0; }
+  .interim { color: var(--text-subtle); font-style: italic; }
+
+  /* ============ EXPORT ============ */
+  .export-bar {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  /* ============ TOAST ============ */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    padding: 10px 18px;
+    background: var(--text);
+    color: var(--bg);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 1000;
+    transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-lg);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .toast.visible { transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--danger); color: white; }
+
+  /* ============ MESSAGES ============ */
+  .alert {
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.5;
+  }
+  .alert.warning { background: var(--warning-bg); color: var(--warning); }
+  .alert.info { background: var(--info-bg); color: var(--info); }
+  .alert.danger { background: var(--danger-bg); color: var(--danger); }
+  .alert.hidden { display: none; }
+  .alert i { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .alert-content { flex: 1; }
+  .alert-content strong { display: block; margin-bottom: 2px; font-weight: 600; }
+
+  /* ============ MODAL ============ */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    padding: 20px;
+  }
+  .modal-backdrop.visible { display: flex; }
+  .modal {
+    background: var(--bg);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    max-width: 480px;
+    width: 100%;
+    box-shadow: var(--shadow-lg);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal h3 {
+    font-size: 16px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .kbd-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .kbd-row:last-child { border-bottom: none; }
+  kbd {
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 11px;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    color: var(--text-muted);
+    margin-left: 4px;
+  }
+
+  button:focus-visible, [contenteditable]:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 640px) {
+    .content { padding: 20px 16px; }
+    .topbar { padding: 12px 16px; }
+    .dropzone { padding: 32px 16px; }
+    .btn { padding: 8px 12px; font-size: 12px; }
+    .select { min-width: 0; flex: 1; }
+    .transcript { padding: 16px; font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-mark"><i class="ti ti-waveform"></i></div>
+        <span>Transcriptor</span>
+      </div>
+      <button class="icon-btn" id="close-sidebar" aria-label="Cerrar menú" style="display:none;"><i class="ti ti-x"></i></button>
+    </div>
+    <button class="btn-new" id="btn-new-session">
+      <i class="ti ti-plus"></i>Nueva transcripción
+    </button>
+    <div class="history-section">
+      <div class="history-label">Historial</div>
+      <div id="history-list"></div>
+    </div>
+    <div class="sidebar-footer">
+      <button class="theme-toggle" id="theme-toggle">
+        <i class="ti ti-sun" id="theme-icon"></i>
+        <span id="theme-label">Tema</span>
+      </button>
+      <button class="theme-toggle" id="shortcuts-btn" aria-label="Atajos">
+        <i class="ti ti-keyboard"></i>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="menu-btn icon-btn" id="open-sidebar" aria-label="Menú"><i class="ti ti-menu-2"></i></button>
+        <input type="text" class="session-title" id="session-title" value="Transcripción sin título" maxlength="80">
+      </div>
+      <div class="status-badge" id="status-badge">
+        <span id="status-text">Listo</span>
+      </div>
+    </div>
+
+    <div class="content">
+      <!-- Onboarding: permiso único al cargar -->
+      <div class="onboard hidden" id="onboard">
+        <h2><i class="ti ti-microphone"></i>Permite el acceso al micrófono</h2>
+        <p>Para que la transcripción funcione bien (incluso con archivos), necesitamos acceso al micrófono <strong>una sola vez</strong>. Después no te lo pediremos más en esta sesión.</p>
+        <div class="permission-status pending" id="permission-status">
+          <i class="ti ti-loader-2"></i>
+          <span id="permission-text">Esperando autorización...</span>
+        </div>
+        <button class="btn btn-primary" id="btn-request-permission">
+          <i class="ti ti-shield-check"></i>Autorizar micrófono
+        </button>
+      </div>
+
+      <!-- Compatibility warning -->
+      <div class="alert warning hidden" id="compat-warning">
+        <i class="ti ti-alert-triangle"></i>
+        <div class="alert-content" id="compat-text"></div>
+      </div>
+
+      <!-- Aviso honesto sobre limitaciones -->
+      <div class="alert info hidden" id="quality-tip">
+        <i class="ti ti-info-circle"></i>
+        <div class="alert-content">
+          <strong>Para mejor precisión con archivos</strong>
+          Sube el volumen, evita ruido ambiental y usa auriculares con micrófono. Si pierdes mucha información, considera grabar pausando cada 30-40 segundos.
+        </div>
+      </div>
+
+      <div class="mode-tabs" role="tablist">
+        <button class="mode-tab active" id="tab-mic" role="tab">
+          <i class="ti ti-microphone"></i>Micrófono
+        </button>
+        <button class="mode-tab" id="tab-file" role="tab">
+          <i class="ti ti-upload"></i>Archivo
+        </button>
+      </div>
+
+      <!-- Panel: Micrófono -->
+      <div id="panel-mic">
+        <div class="mic-panel">
+          <div class="mic-icon-wrap" id="mic-icon">
+            <i class="ti ti-microphone"></i>
+          </div>
+          <div style="font-size: 15px; font-weight: 500; margin-bottom: 4px;">Habla al micrófono</div>
+          <div style="font-size: 13px; color: var(--text-muted);">Ideal para notas de voz, reuniones y clases en vivo</div>
+          <div class="visualizer" id="visualizer-mic" style="display: none;"></div>
+        </div>
+
+        <div class="mic-controls">
+          <button class="btn btn-primary" id="btn-start-mic">
+            <i class="ti ti-player-play"></i><span>Iniciar grabación</span>
+          </button>
+          <button class="btn" id="btn-pause-mic" disabled>
+            <i class="ti ti-player-pause"></i><span>Pausar</span>
+          </button>
+          <button class="btn" id="btn-stop-mic" disabled>
+            <i class="ti ti-player-stop"></i><span>Detener</span>
+          </button>
+          <select class="select" id="lang-select-mic">
+            <option value="es-PE" selected>Español (Perú)</option>
+            <option value="es-ES">Español (España)</option>
+            <option value="es-MX">Español (México)</option>
+            <option value="es-AR">Español (Argentina)</option>
+            <option value="es-CO">Español (Colombia)</option>
+            <option value="es-CL">Español (Chile)</option>
+            <option value="en-US">English (US)</option>
+            <option value="en-GB">English (UK)</option>
+            <option value="pt-BR">Português (BR)</option>
+            <option value="fr-FR">Français</option>
+            <option value="it-IT">Italiano</option>
+            <option value="de-DE">Deutsch</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Panel: Archivo -->
+      <div id="panel-file" style="display: none;">
+        <div class="dropzone" id="dropzone">
+          <i class="ti ti-cloud-upload dropzone-icon"></i>
+          <div class="dropzone-title">Arrastra audio o video aquí</div>
+          <div class="dropzone-subtitle">O haz clic para seleccionar · MP3, WAV, MP4, WEBM, M4A, OGG</div>
+          <input type="file" id="file-input" accept="audio/*,video/*" hidden>
+        </div>
+        <div class="media-card" id="media-card">
+          <div class="media-header">
+            <div class="media-icon-wrap"><i class="ti ti-file-music" id="media-icon"></i></div>
+            <div class="media-meta">
+              <div class="media-name" id="file-name"></div>
+              <div class="media-size" id="file-size"></div>
+            </div>
+            <button class="icon-btn" id="clear-file" aria-label="Quitar archivo"><i class="ti ti-x"></i></button>
+          </div>
+          <div id="media-container"></div>
+          <div class="transcribe-cta">
+            <div class="cta-row">
+              <div class="cta-text">
+                <strong>Listo para transcribir.</strong> Al iniciar, el audio se reproducirá automáticamente y será transcrito en tiempo real.
+              </div>
+              <button class="cta-btn" id="btn-transcribe-file">
+                <i class="ti ti-player-play"></i>Transcribir audio
+              </button>
+            </div>
+            <div class="cta-row" style="gap: 8px;">
+              <select class="select" id="lang-select-file" style="min-width: 160px;">
+                <option value="es-PE" selected>Español (Perú)</option>
+                <option value="es-ES">Español (España)</option>
+                <option value="es-MX">Español (México)</option>
+                <option value="es-AR">Español (Argentina)</option>
+                <option value="es-CO">Español (Colombia)</option>
+                <option value="es-CL">Español (Chile)</option>
+                <option value="en-US">English (US)</option>
+                <option value="en-GB">English (UK)</option>
+                <option value="pt-BR">Português (BR)</option>
+                <option value="fr-FR">Français</option>
+                <option value="it-IT">Italiano</option>
+                <option value="de-DE">Deutsch</option>
+              </select>
+              <button class="btn" id="btn-stop-file" disabled>
+                <i class="ti ti-player-stop"></i><span>Detener</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats" style="margin-top: 24px;">
+        <div class="stat"><i class="ti ti-clock" style="font-size: 13px;"></i><strong id="stat-time">00:00</strong></div>
+        <div class="stat"><i class="ti ti-text-size" style="font-size: 13px;"></i><strong id="stat-words">0</strong> palabras</div>
+        <div class="stat"><i class="ti ti-letter-case" style="font-size: 13px;"></i><strong id="stat-chars">0</strong> caracteres</div>
+        <div class="lossy-warning" id="lossy-warning">
+          <i class="ti ti-alert-triangle" style="font-size: 13px;"></i>
+          <span>Posible pérdida de audio detectada</span>
+        </div>
+        <div class="spacer"></div>
+        <div class="stat" id="autosave-indicator" style="opacity: 0;">
+          <i class="ti ti-check" style="font-size: 13px; color: var(--success);"></i>Guardado
+        </div>
+      </div>
+
+      <div class="transcript-card">
+        <div class="transcript-toolbar">
+          <button class="tool-btn" id="btn-add-paragraph"><i class="ti ti-corner-down-left"></i></button>
+          <button class="tool-btn" id="btn-timestamp"><i class="ti ti-clock"></i><span>Marca</span></button>
+          <div class="tool-divider"></div>
+          <button class="tool-btn" id="btn-search"><i class="ti ti-search"></i></button>
+          <button class="tool-btn" id="btn-undo"><i class="ti ti-arrow-back-up"></i></button>
+          <div class="spacer"></div>
+          <button class="tool-btn" id="btn-fontsize-down"><i class="ti ti-minus"></i></button>
+          <button class="tool-btn" id="btn-fontsize-up"><i class="ti ti-plus"></i></button>
+        </div>
+        <div class="transcript empty" id="transcript" contenteditable="true" spellcheck="true"
+             data-placeholder="La transcripción aparecerá aquí en tiempo real. Puedes editar el texto cuando termines."></div>
+      </div>
+
+      <div class="export-bar">
+        <button class="btn" id="btn-copy"><i class="ti ti-copy"></i>Copiar</button>
+        <button class="btn" id="btn-txt"><i class="ti ti-file-text"></i>.txt</button>
+        <button class="btn" id="btn-doc"><i class="ti ti-file-type-doc"></i>Word</button>
+        <button class="btn" id="btn-pdf"><i class="ti ti-file-type-pdf"></i>PDF</button>
+        <button class="btn" id="btn-md"><i class="ti ti-markdown"></i>Markdown</button>
+        <div class="spacer"></div>
+        <button class="btn" id="btn-clear"><i class="ti ti-trash"></i>Limpiar</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"><i class="ti ti-check" id="toast-icon"></i><span id="toast-text"></span></div>
+
+<div class="modal-backdrop" id="modal-shortcuts">
+  <div class="modal">
+    <h3>Atajos de teclado <button class="icon-btn" id="close-modal"><i class="ti ti-x"></i></button></h3>
+    <div class="kbd-row"><span>Iniciar / detener (mic)</span><kbd>Espacio</kbd></div>
+    <div class="kbd-row"><span>Pausar / reanudar</span><kbd>P</kbd></div>
+    <div class="kbd-row"><span>Copiar todo</span><span><kbd>Ctrl</kbd>+<kbd>C</kbd></span></div>
+    <div class="kbd-row"><span>Descargar TXT</span><span><kbd>Ctrl</kbd>+<kbd>S</kbd></span></div>
+    <div class="kbd-row"><span>Nueva sesión</span><span><kbd>Ctrl</kbd>+<kbd>N</kbd></span></div>
+    <div class="kbd-row"><span>Buscar</span><span><kbd>Ctrl</kbd>+<kbd>F</kbd></span></div>
+    <div class="kbd-row"><span>Deshacer</span><span><kbd>Ctrl</kbd>+<kbd>Z</kbd></span></div>
+    <div class="kbd-row"><span>Cambiar tema</span><span><kbd>Ctrl</kbd>+<kbd>K</kbd></span></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const $ = id => document.getElementById(id);
+  const STORAGE_KEY = 'transcriptor_sessions_v2';
+  const THEME_KEY = 'transcriptor_theme';
+  const FONTSIZE_KEY = 'transcriptor_fontsize';
+  const PERMISSION_KEY = 'transcriptor_perm_granted';
+
+  const state = {
+    mode: 'mic',
+    isRecording: false,
+    isPaused: false,
+    recognition: null,
+    currentFile: null,
+    mediaEl: null,
+    audioCtx: null,
+    analyser: null,
+    micStream: null,
+    visualizerFrame: null,
+    startTime: 0,
+    elapsedBefore: 0,
+    timerInterval: null,
+    currentSessionId: null,
+    sessions: [],
+    fontSize: parseInt(localStorage.getItem(FONTSIZE_KEY) || '16'),
+    autosaveTimeout: null,
+    permissionGranted: false,
+    // Anti-pérdida
+    lastResultTime: 0,
+    silenceCheckInterval: null,
+    restartCount: 0,
+    consecutiveEmptyRestarts: 0,
+    // Modo archivo
+    fileEnded: false
+  };
+
+  const els = {};
+  ['sidebar','open-sidebar','close-sidebar','tab-mic','tab-file','panel-mic','panel-file',
+   'mic-icon','visualizer-mic','dropzone','file-input','media-card','media-container','media-icon',
+   'file-name','file-size','clear-file','btn-start-mic','btn-pause-mic','btn-stop-mic',
+   'btn-transcribe-file','btn-stop-file','lang-select-mic','lang-select-file','status-badge','status-text',
+   'stat-time','stat-words','stat-chars','autosave-indicator','transcript','session-title',
+   'history-list','btn-new-session','btn-copy','btn-txt','btn-doc','btn-pdf','btn-md','btn-clear',
+   'btn-add-paragraph','btn-timestamp','btn-search','btn-undo','btn-fontsize-up','btn-fontsize-down',
+   'theme-toggle','theme-icon','theme-label','shortcuts-btn','modal-shortcuts','close-modal',
+   'toast','toast-text','toast-icon','compat-warning','compat-text','quality-tip','lossy-warning',
+   'onboard','permission-status','permission-text','btn-request-permission'
+  ].forEach(id => {
+    const cam = id.replace(/-./g, m => m[1].toUpperCase());
+    els[cam] = $(id);
+  });
+
+  // ============ UTILS ============
+  function showToast(msg, type) {
+    els.toastText.textContent = msg;
+    els.toastIcon.className = type === 'error' ? 'ti ti-alert-circle' : 'ti ti-check';
+    els.toast.classList.toggle('error', type === 'error');
+    els.toast.classList.add('visible');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => els.toast.classList.remove('visible'), 2400);
+  }
+
+  function formatBytes(b) {
+    if (b < 1024) return b + ' B';
+    if (b < 1048576) return (b/1024).toFixed(1) + ' KB';
+    if (b < 1073741824) return (b/1048576).toFixed(1) + ' MB';
+    return (b/1073741824).toFixed(1) + ' GB';
+  }
+
+  function formatTime(ms) {
+    const t = Math.floor(ms/1000);
+    const h = Math.floor(t/3600), m = Math.floor((t%3600)/60), s = t%60;
+    const pad = n => String(n).padStart(2,'0');
+    return h > 0 ? `${pad(h)}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
+  }
+
+  function getText() { return els.transcript.innerText.trim(); }
+
+  // ============ THEME ============
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem(THEME_KEY, theme);
+    els.themeIcon.className = theme === 'dark' ? 'ti ti-moon' : 'ti ti-sun';
+    els.themeLabel.textContent = theme === 'dark' ? 'Oscuro' : 'Claro';
+  }
+  function toggleTheme() {
+    const c = document.documentElement.getAttribute('data-theme') ||
+      (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    applyTheme(c === 'dark' ? 'light' : 'dark');
+  }
+  applyTheme(localStorage.getItem(THEME_KEY) ||
+    (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+  els.themeToggle.addEventListener('click', toggleTheme);
+
+  // ============ FONT SIZE ============
+  function applyFontSize() {
+    els.transcript.style.fontSize = state.fontSize + 'px';
+    localStorage.setItem(FONTSIZE_KEY, state.fontSize);
+  }
+  applyFontSize();
+  els.btnFontsizeUp.addEventListener('click', () => { state.fontSize = Math.min(state.fontSize+1,24); applyFontSize(); });
+  els.btnFontsizeDown.addEventListener('click', () => { state.fontSize = Math.max(state.fontSize-1,12); applyFontSize(); });
+
+  // ============ TABS ============
+  function switchMode(m) {
+    if (state.isRecording) { showToast('Detén la transcripción antes de cambiar', 'error'); return; }
+    state.mode = m;
+    els.tabMic.classList.toggle('active', m === 'mic');
+    els.tabFile.classList.toggle('active', m === 'file');
+    els.panelMic.style.display = m === 'mic' ? 'block' : 'none';
+    els.panelFile.style.display = m === 'file' ? 'block' : 'none';
+    els.qualityTip.classList.toggle('hidden', m !== 'file');
+  }
+  els.tabMic.addEventListener('click', () => switchMode('mic'));
+  els.tabFile.addEventListener('click', () => switchMode('file'));
+
+  // ============ COMPATIBILITY ============
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    els.compatWarning.classList.remove('hidden');
+    els.compatText.innerHTML = '<strong>Navegador no compatible</strong>Usa Chrome, Edge o Safari para que funcione el reconocimiento de voz.';
+    els.btnStartMic.disabled = true;
+    els.btnTranscribeFile.disabled = true;
+  }
+
+  // ============ PERMISO ÚNICO (clave para la UX) ============
+  async function checkPermissionStatus() {
+    if (!navigator.permissions) return null;
+    try {
+      const p = await navigator.permissions.query({ name: 'microphone' });
+      return p.state; // 'granted' | 'denied' | 'prompt'
+    } catch(_) { return null; }
+  }
+
+  async function initPermission() {
+    if (!SR) return;
+    const status = await checkPermissionStatus();
+    if (status === 'granted' || sessionStorage.getItem(PERMISSION_KEY) === '1') {
+      state.permissionGranted = true;
+      els.onboard.classList.add('hidden');
+      return;
+    }
+    // Mostrar onboarding solo si no se ha dado permiso
+    els.onboard.classList.remove('hidden');
+  }
+
+  async function requestPermission() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true
+        }
+      });
+      // Cerramos el stream — solo necesitábamos el permiso
+      stream.getTracks().forEach(t => t.stop());
+      state.permissionGranted = true;
+      sessionStorage.setItem(PERMISSION_KEY, '1');
+      els.permissionStatus.className = 'permission-status granted';
+      els.permissionStatus.querySelector('i').className = 'ti ti-check';
+      els.permissionText.textContent = 'Micrófono autorizado correctamente';
+      setTimeout(() => els.onboard.classList.add('hidden'), 800);
+      showToast('Micrófono autorizado');
+    } catch (e) {
+      state.permissionGranted = false;
+      els.permissionStatus.className = 'permission-status denied';
+      els.permissionStatus.querySelector('i').className = 'ti ti-x';
+      els.permissionText.textContent = 'Permiso denegado. Habilita el micrófono en la configuración del navegador.';
+    }
+  }
+  els.btnRequestPermission.addEventListener('click', requestPermission);
+
+  // ============ FILE UPLOAD ============
+  els.dropzone.addEventListener('click', () => els.fileInput.click());
+  els.dropzone.addEventListener('dragover', e => { e.preventDefault(); els.dropzone.classList.add('dragover'); });
+  els.dropzone.addEventListener('dragleave', () => els.dropzone.classList.remove('dragover'));
+  els.dropzone.addEventListener('drop', e => {
+    e.preventDefault();
+    els.dropzone.classList.remove('dragover');
+    if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+  });
+  els.fileInput.addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
+
+  function handleFile(file) {
+    if (!file.type.startsWith('audio/') && !file.type.startsWith('video/')) {
+      showToast('Formato no soportado', 'error');
+      return;
+    }
+    state.currentFile = file;
+    state.fileEnded = false;
+    els.fileName.textContent = file.name;
+    els.fileSize.textContent = formatBytes(file.size);
+    const isVideo = file.type.startsWith('video/');
+    els.mediaIcon.className = isVideo ? 'ti ti-video' : 'ti ti-file-music';
+
+    const url = URL.createObjectURL(file);
+    els.mediaContainer.innerHTML = '';
+    state.mediaEl = document.createElement(isVideo ? 'video' : 'audio');
+    state.mediaEl.controls = true;
+    state.mediaEl.src = url;
+    state.mediaEl.addEventListener('ended', () => {
+      state.fileEnded = true;
+      if (state.isRecording) {
+        // Dar 3 segundos extra para capturar últimas palabras
+        setTimeout(() => { if (state.isRecording) stopRecording(); }, 3000);
+      }
+    });
+    els.mediaContainer.appendChild(state.mediaEl);
+    els.mediaCard.classList.add('visible');
+    els.dropzone.style.display = 'none';
+  }
+
+  els.clearFile.addEventListener('click', () => {
+    if (state.isRecording) { showToast('Detén la transcripción primero', 'error'); return; }
+    state.currentFile = null;
+    if (state.mediaEl) { state.mediaEl.pause(); state.mediaEl = null; }
+    els.mediaContainer.innerHTML = '';
+    els.mediaCard.classList.remove('visible');
+    els.dropzone.style.display = 'block';
+    els.fileInput.value = '';
+  });
+
+  // ============ VISUALIZER ============
+  function setupVisualizer(stream) {
+    if (state.audioCtx) try { state.audioCtx.close(); } catch(_) {}
+    state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const source = state.audioCtx.createMediaStreamSource(stream);
+    state.analyser = state.audioCtx.createAnalyser();
+    state.analyser.fftSize = 64;
+    source.connect(state.analyser);
+
+    const viz = els.visualizerMic;
+    viz.innerHTML = '';
+    const bars = 24;
+    for (let i = 0; i < bars; i++) {
+      const b = document.createElement('div');
+      b.className = 'vbar';
+      viz.appendChild(b);
+    }
+    viz.style.display = 'flex';
+    const data = new Uint8Array(state.analyser.frequencyBinCount);
+    const barEls = viz.querySelectorAll('.vbar');
+
+    function draw() {
+      if (!state.isRecording) return;
+      state.analyser.getByteFrequencyData(data);
+      for (let i = 0; i < bars; i++) {
+        const v = data[Math.floor(i * data.length / bars)] / 255;
+        barEls[i].style.height = (4 + v * 40) + 'px';
+      }
+      state.visualizerFrame = requestAnimationFrame(draw);
+    }
+    draw();
+  }
+
+  function stopVisualizer() {
+    if (state.visualizerFrame) cancelAnimationFrame(state.visualizerFrame);
+    if (state.micStream) {
+      state.micStream.getTracks().forEach(t => t.stop());
+      state.micStream = null;
+    }
+    if (state.audioCtx) try { state.audioCtx.close(); } catch(_) {}
+    state.audioCtx = null;
+    els.visualizerMic.style.display = 'none';
+  }
+
+  // ============ TIMER ============
+  function startTimer() {
+    state.startTime = Date.now();
+    if (state.timerInterval) clearInterval(state.timerInterval);
+    state.timerInterval = setInterval(() => {
+      const e = state.elapsedBefore + (Date.now() - state.startTime);
+      els.statTime.textContent = formatTime(e);
+    }, 500);
+  }
+  function pauseTimer() {
+    if (state.timerInterval) clearInterval(state.timerInterval);
+    state.elapsedBefore += Date.now() - state.startTime;
+  }
+  function resetTimer() {
+    if (state.timerInterval) clearInterval(state.timerInterval);
+    state.elapsedBefore = 0;
+    state.startTime = 0;
+    els.statTime.textContent = '00:00';
+  }
+
+  // ============ SPEECH RECOGNITION (anti-pérdida) ============
+  let interimSpan = null;
+
+  function getCurrentLang() {
+    return state.mode === 'mic' ? els.langSelectMic.value : els.langSelectFile.value;
+  }
+
+  function setupRecognition() {
+    if (!SR) return null;
+    const r = new SR();
+    r.continuous = true;
+    r.interimResults = true;
+    r.maxAlternatives = 1;
+    r.lang = getCurrentLang();
+
+    r.onresult = e => {
+      state.lastResultTime = Date.now();
+      state.consecutiveEmptyRestarts = 0;
+      let finalText = '';
+      let interimText = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const t = e.results[i][0].transcript;
+        if (e.results[i].isFinal) finalText += t + ' ';
+        else interimText += t;
+      }
+      if (finalText) appendFinalText(finalText);
+      updateInterim(interimText);
+    };
+
+    r.onerror = e => {
+      if (e.error === 'no-speech' || e.error === 'aborted') return;
+      if (e.error === 'not-allowed') {
+        showToast('Permiso del micrófono denegado', 'error');
+        stopRecording();
+      } else if (e.error === 'audio-capture') {
+        showToast('Sin audio detectado. Verifica tu micrófono.', 'error');
+        stopRecording();
+      } else if (e.error === 'network') {
+        showToast('Sin conexión. El reconocimiento necesita internet.', 'error');
+      } else {
+        console.warn('Recognition error:', e.error);
+      }
+    };
+
+    r.onend = () => {
+      // Auto-reinicio para sesiones largas (Google corta cada ~60s)
+      if (state.isRecording && !state.isPaused) {
+        state.restartCount++;
+        // Si hubo varios reinicios consecutivos sin texto, mostrar advertencia
+        if (state.consecutiveEmptyRestarts > 2) {
+          els.lossyWarning.classList.add('visible');
+        }
+        // Pequeño delay para evitar errores de "already started"
+        setTimeout(() => {
+          if (state.isRecording && !state.isPaused) {
+            try {
+              state.recognition.start();
+              state.consecutiveEmptyRestarts++;
+            } catch(err) {
+              // Si falla, crear nuevo objeto
+              state.recognition = setupRecognition();
+              try { state.recognition.start(); } catch(_) {}
+            }
+          }
+        }, 100);
+      }
+    };
+
+    return r;
+  }
+
+  function appendFinalText(text) {
+    if (els.transcript.classList.contains('empty')) {
+      els.transcript.classList.remove('empty');
+      els.transcript.innerHTML = '';
+    }
+    if (interimSpan && interimSpan.parentNode) interimSpan.remove();
+    interimSpan = null;
+
+    let cleaned = text.trim();
+    const current = els.transcript.innerText.trim();
+    if (!current || /[.!?]\s*$/.test(current)) {
+      cleaned = cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+    }
+
+    let lastP = els.transcript.querySelector('p:last-child');
+    if (!lastP) {
+      lastP = document.createElement('p');
+      els.transcript.appendChild(lastP);
+    }
+    lastP.appendChild(document.createTextNode((lastP.textContent ? ' ' : '') + cleaned));
+    els.transcript.scrollTop = els.transcript.scrollHeight;
+    updateStats();
+    scheduleAutosave();
+  }
+
+  function updateInterim(text) {
+    if (text) {
+      if (!interimSpan) {
+        interimSpan = document.createElement('span');
+        interimSpan.className = 'interim';
+        let lastP = els.transcript.querySelector('p:last-child');
+        if (!lastP) {
+          lastP = document.createElement('p');
+          els.transcript.appendChild(lastP);
+        }
+        lastP.appendChild(document.createTextNode(' '));
+        lastP.appendChild(interimSpan);
+      }
+      interimSpan.textContent = text;
+      els.transcript.scrollTop = els.transcript.scrollHeight;
+    } else if (interimSpan) {
+      interimSpan.textContent = '';
+    }
+  }
+
+  // Detector de "silencio prolongado" — si pasa mucho tiempo sin resultados, reiniciar
+  function startSilenceCheck() {
+    if (state.silenceCheckInterval) clearInterval(state.silenceCheckInterval);
+    state.lastResultTime = Date.now();
+    state.silenceCheckInterval = setInterval(() => {
+      if (!state.isRecording || state.isPaused) return;
+      const elapsed = Date.now() - state.lastResultTime;
+      // Si pasan más de 8 segundos sin ningún resultado y hay audio activo, reiniciar reconocimiento
+      if (elapsed > 8000 && state.audioCtx) {
+        // Verificar que hay audio entrando (no es silencio real)
+        const data = new Uint8Array(state.analyser.frequencyBinCount);
+        state.analyser.getByteFrequencyData(data);
+        const avg = data.reduce((a,b) => a+b, 0) / data.length;
+        if (avg > 5) {
+          // Hay audio pero no transcripción → forzar reinicio
+          console.log('Forzando reinicio del reconocimiento');
+          els.lossyWarning.classList.add('visible');
+          try { state.recognition.abort(); } catch(_) {}
+          state.lastResultTime = Date.now();
+        }
+      }
+    }, 2000);
+  }
+
+  function stopSilenceCheck() {
+    if (state.silenceCheckInterval) {
+      clearInterval(state.silenceCheckInterval);
+      state.silenceCheckInterval = null;
+    }
+  }
+
+  // ============ START / STOP ============
+  async function ensurePermission() {
+    if (state.permissionGranted) return true;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true }
+      });
+      stream.getTracks().forEach(t => t.stop());
+      state.permissionGranted = true;
+      sessionStorage.setItem(PERMISSION_KEY, '1');
+      els.onboard.classList.add('hidden');
+      return true;
+    } catch(_) {
+      showToast('Necesitas autorizar el micrófono', 'error');
+      els.onboard.classList.remove('hidden');
+      return false;
+    }
+  }
+
+  async function startRecordingMic() {
+    if (!(await ensurePermission())) return;
+    try {
+      // Para mic: configuración optimizada para voz humana en vivo
+      state.micStream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+      });
+      setupVisualizer(state.micStream);
+    } catch(e) { showToast('No se pudo acceder al micrófono', 'error'); return; }
+
+    startRecognitionFlow();
+  }
+
+  async function startRecordingFile() {
+    if (!state.currentFile) { showToast('Sube un archivo primero', 'error'); return; }
+    if (!(await ensurePermission())) return;
+
+    try {
+      // Para archivos: SIN noise suppression para no filtrar el audio del archivo
+      state.micStream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true }
+      });
+      setupVisualizer(state.micStream);
+    } catch(e) { showToast('No se pudo acceder al micrófono', 'error'); return; }
+
+    startRecognitionFlow();
+
+    // Reset y reproducir
+    state.mediaEl.currentTime = 0;
+    state.fileEnded = false;
+    try { await state.mediaEl.play(); }
+    catch(e) { showToast('Reproduce manualmente el audio', 'error'); }
+
+    els.btnTranscribeFile.disabled = true;
+    els.btnStopFile.disabled = false;
+  }
+
+  function startRecognitionFlow() {
+    state.recognition = setupRecognition();
+    if (!state.recognition) return;
+    state.restartCount = 0;
+    state.consecutiveEmptyRestarts = 0;
+    state.lastResultTime = Date.now();
+    els.lossyWarning.classList.remove('visible');
+
+    try { state.recognition.start(); }
+    catch(e) {
+      showToast('Error al iniciar: ' + e.message, 'error');
+      stopVisualizer();
+      return;
+    }
+
+    state.isRecording = true;
+    state.isPaused = false;
+
+    if (state.mode === 'mic') {
+      els.btnStartMic.disabled = true;
+      els.btnPauseMic.disabled = false;
+      els.btnStopMic.disabled = false;
+    }
+
+    els.statusBadge.classList.add('recording');
+    els.statusText.innerHTML = '<span class="dot"></span>Grabando';
+    els.micIcon.classList.add('active');
+    startTimer();
+    startSilenceCheck();
+  }
+
+  function pauseRecording() {
+    if (!state.recognition) return;
+    if (!state.isPaused) {
+      state.isPaused = true;
+      try { state.recognition.stop(); } catch(_) {}
+      pauseTimer();
+      stopSilenceCheck();
+      els.btnPauseMic.querySelector('span').textContent = 'Reanudar';
+      els.btnPauseMic.querySelector('i').className = 'ti ti-player-play';
+      els.statusBadge.classList.remove('recording');
+      els.statusText.textContent = 'En pausa';
+      els.micIcon.classList.remove('active');
+      if (state.mode === 'file' && state.mediaEl) state.mediaEl.pause();
+    } else {
+      state.isPaused = false;
+      state.recognition = setupRecognition();
+      try { state.recognition.start(); } catch(_) {}
+      startTimer();
+      startSilenceCheck();
+      els.btnPauseMic.querySelector('span').textContent = 'Pausar';
+      els.btnPauseMic.querySelector('i').className = 'ti ti-player-pause';
+      els.statusBadge.classList.add('recording');
+      els.statusText.innerHTML = '<span class="dot"></span>Grabando';
+      els.micIcon.classList.add('active');
+      if (state.mode === 'file' && state.mediaEl) state.mediaEl.play();
+    }
+  }
+
+  function stopRecording() {
+    state.isRecording = false;
+    state.isPaused = false;
+    if (state.recognition) {
+      try { state.recognition.stop(); } catch(_) {}
+      state.recognition = null;
+    }
+    stopVisualizer();
+    pauseTimer();
+    stopSilenceCheck();
+    if (interimSpan && interimSpan.parentNode) { interimSpan.remove(); interimSpan = null; }
+    if (state.mode === 'file' && state.mediaEl) state.mediaEl.pause();
+
+    els.btnStartMic.disabled = false;
+    els.btnPauseMic.disabled = true;
+    els.btnStopMic.disabled = true;
+    els.btnPauseMic.querySelector('span').textContent = 'Pausar';
+    els.btnPauseMic.querySelector('i').className = 'ti ti-player-pause';
+    els.btnTranscribeFile.disabled = false;
+    els.btnStopFile.disabled = true;
+
+    els.statusBadge.classList.remove('recording');
+    els.statusText.textContent = 'Detenido';
+    els.micIcon.classList.remove('active');
+    saveCurrentSession();
+  }
+
+  els.btnStartMic.addEventListener('click', startRecordingMic);
+  els.btnPauseMic.addEventListener('click', pauseRecording);
+  els.btnStopMic.addEventListener('click', stopRecording);
+  els.btnTranscribeFile.addEventListener('click', startRecordingFile);
+  els.btnStopFile.addEventListener('click', stopRecording);
+
+  // Cambio de idioma en caliente
+  [els.langSelectMic, els.langSelectFile].forEach(sel => {
+    sel.addEventListener('change', () => {
+      // Sincronizar ambos selects
+      els.langSelectMic.value = sel.value;
+      els.langSelectFile.value = sel.value;
+      if (state.recognition && state.isRecording && !state.isPaused) {
+        try { state.recognition.stop(); } catch(_) {}
+      }
+    });
+  });
+
+  // ============ STATS ============
+  function updateStats() {
+    const t = getText();
+    const w = t ? t.split(/\s+/).filter(Boolean).length : 0;
+    els.statWords.textContent = w.toLocaleString();
+    els.statChars.textContent = t.length.toLocaleString();
+  }
+  els.transcript.addEventListener('input', () => { updateStats(); scheduleAutosave(); });
+
+  // ============ TRANSCRIPT TOOLS ============
+  els.btnAddParagraph.addEventListener('click', () => {
+    const p = document.createElement('p');
+    p.innerHTML = '<br>';
+    els.transcript.appendChild(p);
+    const r = document.createRange();
+    r.selectNodeContents(p);
+    r.collapse(true);
+    const s = window.getSelection();
+    s.removeAllRanges();
+    s.addRange(r);
+    els.transcript.focus();
+  });
+
+  els.btnTimestamp.addEventListener('click', () => {
+    const time = formatTime(state.elapsedBefore + (state.startTime ? Date.now() - state.startTime : 0));
+    const txt = `[${time}] `;
+    const sel = window.getSelection();
+    if (sel.rangeCount > 0 && els.transcript.contains(sel.anchorNode)) {
+      const r = sel.getRangeAt(0);
+      r.insertNode(document.createTextNode(txt));
+      r.collapse(false);
+    } else {
+      let lastP = els.transcript.querySelector('p:last-child');
+      if (!lastP) { lastP = document.createElement('p'); els.transcript.appendChild(lastP); }
+      lastP.appendChild(document.createTextNode(' ' + txt));
+    }
+    els.transcript.focus();
+    updateStats();
+  });
+
+  els.btnSearch.addEventListener('click', () => {
+    const term = prompt('Buscar en la transcripción:');
+    if (!term) return;
+    if (window.find) window.find(term);
+    else showToast('Tu navegador no soporta búsqueda', 'error');
+  });
+
+  els.btnUndo.addEventListener('click', () => document.execCommand('undo'));
+
+  // ============ SESSIONS ============
+  function loadSessions() {
+    try { state.sessions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+    catch(_) { state.sessions = []; }
+    renderHistory();
+  }
+  function saveSessions() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state.sessions)); }
+
+  function scheduleAutosave() {
+    clearTimeout(state.autosaveTimeout);
+    state.autosaveTimeout = setTimeout(() => {
+      saveCurrentSession();
+      els.autosaveIndicator.style.opacity = '1';
+      setTimeout(() => els.autosaveIndicator.style.opacity = '0', 1500);
+    }, 800);
+  }
+
+  function saveCurrentSession() {
+    const t = getText();
+    if (!t) return;
+    if (!state.currentSessionId) {
+      state.currentSessionId = 'ses_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
+    }
+    const idx = state.sessions.findIndex(s => s.id === state.currentSessionId);
+    const data = {
+      id: state.currentSessionId,
+      title: els.sessionTitle.value || 'Transcripción sin título',
+      html: els.transcript.innerHTML,
+      updated: Date.now(),
+      lang: getCurrentLang()
+    };
+    if (idx >= 0) state.sessions[idx] = data;
+    else state.sessions.unshift(data);
+    state.sessions = state.sessions.slice(0, 50);
+    saveSessions();
+    renderHistory();
+  }
+
+  function loadSession(id) {
+    const s = state.sessions.find(x => x.id === id);
+    if (!s) return;
+    if (state.isRecording) stopRecording();
+    state.currentSessionId = id;
+    els.sessionTitle.value = s.title;
+    els.transcript.innerHTML = s.html;
+    els.transcript.classList.toggle('empty', !s.html.trim());
+    if (s.lang) { els.langSelectMic.value = s.lang; els.langSelectFile.value = s.lang; }
+    updateStats();
+    renderHistory();
+  }
+
+  function deleteSession(id, e) {
+    e.stopPropagation();
+    if (!confirm('¿Eliminar esta transcripción?')) return;
+    state.sessions = state.sessions.filter(s => s.id !== id);
+    saveSessions();
+    if (state.currentSessionId === id) newSession();
+    renderHistory();
+  }
+
+  function newSession() {
+    if (state.isRecording) stopRecording();
+    state.currentSessionId = null;
+    els.sessionTitle.value = 'Transcripción sin título';
+    els.transcript.innerHTML = '';
+    els.transcript.classList.add('empty');
+    els.lossyWarning.classList.remove('visible');
+    resetTimer();
+    updateStats();
+    renderHistory();
+  }
+
+  function renderHistory() {
+    if (state.sessions.length === 0) {
+      els.historyList.innerHTML = '<div class="history-empty">Sin transcripciones guardadas</div>';
+      return;
+    }
+    els.historyList.innerHTML = state.sessions.map(s => {
+      const active = s.id === state.currentSessionId;
+      const safe = (s.title || 'Sin título').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+      return `<button class="history-item ${active?'active':''}" data-id="${s.id}">
+        <i class="ti ti-file-text" style="font-size:14px;color:var(--text-subtle);"></i>
+        <span class="history-item-title">${safe}</span>
+        <span class="history-item-delete" data-del="${s.id}"><i class="ti ti-trash" style="font-size:14px;"></i></span>
+      </button>`;
+    }).join('');
+    els.historyList.querySelectorAll('.history-item').forEach(el => {
+      el.addEventListener('click', e => {
+        const del = e.target.closest('[data-del]');
+        if (del) { deleteSession(del.dataset.del, e); return; }
+        loadSession(el.dataset.id);
+      });
+    });
+  }
+  els.btnNewSession.addEventListener('click', newSession);
+  els.sessionTitle.addEventListener('input', scheduleAutosave);
+
+  // ============ EXPORT ============
+  function downloadBlob(blob, fn) {
+    const u = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = u; a.download = fn;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(u), 1000);
+  }
+  function getFilename(ext) {
+    const t = (els.sessionTitle.value || 'transcripcion').trim()
+      .replace(/[^a-z0-9áéíóúñü\s-]/gi, '')
+      .replace(/\s+/g,'_').toLowerCase().slice(0,60);
+    return (t || 'transcripcion') + '.' + ext;
+  }
+  function checkText() {
+    const t = getText();
+    if (!t) { showToast('No hay texto para exportar', 'error'); return null; }
+    return t;
+  }
+
+  els.btnCopy.addEventListener('click', () => {
+    const t = checkText(); if (!t) return;
+    navigator.clipboard.writeText(t).then(
+      () => showToast('Copiado al portapapeles'),
+      () => showToast('No se pudo copiar', 'error')
+    );
+  });
+  els.btnTxt.addEventListener('click', () => {
+    const t = checkText(); if (!t) return;
+    downloadBlob(new Blob([t], { type: 'text/plain;charset=utf-8' }), getFilename('txt'));
+    showToast('Descargado .txt');
+  });
+  els.btnMd.addEventListener('click', () => {
+    const t = checkText(); if (!t) return;
+    const c = `# ${els.sessionTitle.value || 'Transcripción'}\n\n*${new Date().toLocaleString('es-PE')}*\n\n${t}`;
+    downloadBlob(new Blob([c], { type: 'text/markdown;charset=utf-8' }), getFilename('md'));
+    showToast('Descargado .md');
+  });
+  els.btnDoc.addEventListener('click', () => {
+    const t = checkText(); if (!t) return;
+    const title = (els.sessionTitle.value || 'Transcripción').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+    const date = new Date().toLocaleString('es-PE');
+    const ps = t.split(/\n\n+/).map(p =>
+      `<p style="margin:0 0 12pt;">${p.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>')}</p>`
+    ).join('');
+    const html = `<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="utf-8"><title>${title}</title>
+<style>body{font-family:Calibri,sans-serif;font-size:11pt;line-height:1.5;}h1{font-size:18pt;margin-bottom:8pt;}.meta{color:#666;font-size:10pt;margin-bottom:16pt;}</style>
+</head><body><h1>${title}</h1><div class="meta">${date}</div>${ps}</body></html>`;
+    downloadBlob(new Blob(['\ufeff', html], { type: 'application/msword' }), getFilename('doc'));
+    showToast('Descargado Word');
+  });
+  els.btnPdf.addEventListener('click', () => {
+    const t = checkText(); if (!t) return;
+    if (!window.jspdf) { showToast('Librería PDF no disponible', 'error'); return; }
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+    const pw = doc.internal.pageSize.getWidth();
+    const ph = doc.internal.pageSize.getHeight();
+    const m = 48, mw = pw - m*2;
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(18);
+    doc.text(els.sessionTitle.value || 'Transcripción', m, 60);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+    doc.setTextColor(120);
+    doc.text(new Date().toLocaleString('es-PE'), m, 80);
+    doc.setTextColor(0); doc.setFontSize(11);
+    let y = 110;
+    t.split(/\n\n+/).forEach(p => {
+      const lines = doc.splitTextToSize(p, mw);
+      lines.forEach(l => {
+        if (y > ph - m) { doc.addPage(); y = m; }
+        doc.text(l, m, y); y += 16;
+      });
+      y += 8;
+    });
+    doc.save(getFilename('pdf'));
+    showToast('Descargado PDF');
+  });
+  els.btnClear.addEventListener('click', () => {
+    if (!getText()) return;
+    if (!confirm('¿Borrar toda la transcripción?')) return;
+    els.transcript.innerHTML = '';
+    els.transcript.classList.add('empty');
+    els.lossyWarning.classList.remove('visible');
+    updateStats();
+    resetTimer();
+  });
+
+  // ============ MODAL ============
+  els.shortcutsBtn.addEventListener('click', () => els.modalShortcuts.classList.add('visible'));
+  els.closeModal.addEventListener('click', () => els.modalShortcuts.classList.remove('visible'));
+  els.modalShortcuts.addEventListener('click', e => {
+    if (e.target === els.modalShortcuts) els.modalShortcuts.classList.remove('visible');
+  });
+
+  // ============ MOBILE SIDEBAR ============
+  els.openSidebar.addEventListener('click', () => {
+    els.sidebar.classList.add('open');
+    els.closeSidebar.style.display = 'inline-flex';
+  });
+  els.closeSidebar.addEventListener('click', () => {
+    els.sidebar.classList.remove('open');
+    els.closeSidebar.style.display = 'none';
+  });
+
+  // ============ KEYBOARD ============
+  document.addEventListener('keydown', e => {
+    const inInput = ['INPUT','TEXTAREA'].includes(document.activeElement.tagName) ||
+                    document.activeElement.isContentEditable;
+    const mod = e.ctrlKey || e.metaKey;
+    if (mod && e.key === 's') { e.preventDefault(); els.btnTxt.click(); }
+    else if (mod && e.key === 'n') { e.preventDefault(); newSession(); }
+    else if (mod && e.key === 'k') { e.preventDefault(); toggleTheme(); }
+    else if (mod && e.key === 'f') { e.preventDefault(); els.btnSearch.click(); }
+    else if (e.key === 'Escape') els.modalShortcuts.classList.remove('visible');
+    else if (!inInput) {
+      if (e.key === ' ' && state.mode === 'mic') {
+        e.preventDefault();
+        if (state.isRecording) stopRecording(); else startRecordingMic();
+      } else if (e.key === 'p' || e.key === 'P') {
+        if (state.isRecording) pauseRecording();
+      }
+    }
+  });
+
+  // ============ INIT ============
+  loadSessions();
+  updateStats();
+  initPermission();
+  els.transcript.addEventListener('focus', () => {
+    if (els.transcript.classList.contains('empty')) els.transcript.classList.remove('empty');
+  });
+  els.transcript.addEventListener('blur', () => {
+    if (!getText()) els.transcript.classList.add('empty');
+  });
+  window.addEventListener('beforeunload', e => {
+    if (state.isRecording) { e.preventDefault(); e.returnValue = ''; }
+  });
+
+})();
+</script>
+</body>
+</html>
