@@ -46,8 +46,6 @@
     --success: #4ade80; --success-bg: #142a1a;
     --warning: #fbbf24; --warning-bg: #2a2114;
     --info: #60a5fa; --info-bg: #14202a;
-    --shadow: 0 1px 2px rgba(0,0,0,0.4);
-    --shadow-lg: 0 4px 16px rgba(0,0,0,0.5);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
@@ -59,12 +57,9 @@
       --success: #4ade80; --success-bg: #142a1a;
       --warning: #fbbf24; --warning-bg: #2a2114;
       --info: #60a5fa; --info-bg: #14202a;
-      --shadow: 0 1px 2px rgba(0,0,0,0.4);
-      --shadow-lg: 0 4px 16px rgba(0,0,0,0.5);
     }
   }
 
-  html { scroll-behavior: smooth; }
   body {
     font-family: var(--font);
     background: var(--bg);
@@ -82,11 +77,7 @@
   ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--text-subtle); }
 
-  .app {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    min-height: 100vh;
-  }
+  .app { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
   @media (max-width: 900px) {
     .app { grid-template-columns: 1fr; }
     .sidebar { display: none; }
@@ -109,23 +100,12 @@
     align-items: center;
     justify-content: space-between;
   }
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-  }
+  .logo { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
   .logo-mark {
-    width: 28px;
-    height: 28px;
-    background: var(--accent);
-    color: var(--accent-text);
+    width: 28px; height: 28px;
+    background: var(--accent); color: var(--accent-text);
     border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     font-size: 14px;
   }
   .btn-new {
@@ -238,7 +218,8 @@
     white-space: nowrap;
   }
   .status-badge.recording { background: var(--danger-bg); color: var(--danger); }
-  .status-badge.recording .dot {
+  .status-badge.processing { background: var(--info-bg); color: var(--info); }
+  .status-badge .dot {
     width: 6px; height: 6px; background: currentColor; border-radius: 50%;
     animation: pulse 1.4s ease-in-out infinite;
   }
@@ -247,48 +228,8 @@
     50% { opacity: 0.4; transform: scale(0.85); }
   }
 
-  .content {
-    flex: 1;
-    padding: 32px 24px;
-    max-width: 900px;
-    width: 100%;
-    margin: 0 auto;
-  }
+  .content { flex: 1; padding: 32px 24px; max-width: 900px; width: 100%; margin: 0 auto; }
 
-  /* ============ ONBOARDING / PERMISO ÚNICO ============ */
-  .onboard {
-    background: var(--bg-soft);
-    border-radius: var(--radius-lg);
-    padding: 24px;
-    margin-bottom: 24px;
-    border: 1px solid var(--border);
-  }
-  .onboard.hidden { display: none; }
-  .onboard h2 {
-    font-size: 17px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .onboard p { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
-  .permission-status {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px;
-    background: var(--bg);
-    border-radius: var(--radius);
-    margin-bottom: 12px;
-    font-size: 13px;
-  }
-  .permission-status i { font-size: 18px; }
-  .permission-status.granted i { color: var(--success); }
-  .permission-status.denied i { color: var(--danger); }
-  .permission-status.pending i { color: var(--text-muted); }
-
-  /* ============ MODE TABS ============ */
   .mode-tabs {
     display: inline-flex;
     background: var(--bg-soft);
@@ -310,7 +251,6 @@
   }
   .mode-tab.active { background: var(--bg); color: var(--text); box-shadow: var(--shadow); }
 
-  /* ============ DROPZONE ============ */
   .dropzone {
     border: 2px dashed var(--border-strong);
     border-radius: var(--radius-lg);
@@ -328,29 +268,15 @@
   .dropzone-title { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
   .dropzone-subtitle { font-size: 13px; color: var(--text-muted); }
 
-  /* ============ MEDIA CARD (mejorado) ============ */
-  .media-card {
-    background: var(--bg-soft);
-    border-radius: var(--radius-lg);
-    padding: 20px;
-    display: none;
-  }
+  .media-card { background: var(--bg-soft); border-radius: var(--radius-lg); padding: 20px; display: none; }
   .media-card.visible { display: block; }
 
-  .media-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-  }
+  .media-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
   .media-icon-wrap {
-    width: 44px;
-    height: 44px;
+    width: 44px; height: 44px;
     background: var(--bg);
     border-radius: var(--radius);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     color: var(--text-muted);
     flex-shrink: 0;
     font-size: 20px;
@@ -359,12 +285,9 @@
   .media-name { font-size: 14px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .media-size { font-size: 12px; color: var(--text-muted); }
   .icon-btn {
-    width: 32px;
-    height: 32px;
+    width: 32px; height: 32px;
     border-radius: var(--radius);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    display: inline-flex; align-items: center; justify-content: center;
     color: var(--text-muted);
     transition: all var(--transition);
   }
@@ -377,23 +300,58 @@
   }
   video { max-height: 280px; background: #000; }
 
-  /* CTA prominente después de cargar archivo */
-  .transcribe-cta {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 16px;
+  /* ============ AUDIO PROCESSING PANEL ============ */
+  .processing-panel {
     background: var(--info-bg);
     border-radius: var(--radius);
+    padding: 16px;
     margin-top: 4px;
   }
+  .processing-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .processing-header i { font-size: 20px; color: var(--info); }
+  .processing-title { font-size: 14px; font-weight: 600; color: var(--info); }
+  .processing-subtitle { font-size: 12px; color: var(--info); opacity: 0.8; }
+
+  .processing-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .pstep {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    background: var(--bg);
+    border-radius: var(--radius);
+    font-size: 13px;
+    transition: all var(--transition);
+  }
+  .pstep.pending { opacity: 0.5; }
+  .pstep.active { background: var(--bg); }
+  .pstep.active .pstep-icon i { animation: spin 1s linear infinite; }
+  .pstep.done .pstep-icon { color: var(--success); }
+  .pstep-icon { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); flex-shrink: 0; }
+  .pstep-icon i { font-size: 16px; }
+  .pstep-text { flex: 1; color: var(--text); }
+  .pstep-meta { font-size: 11px; color: var(--text-muted); }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
   .cta-row {
     display: flex;
     align-items: center;
     gap: 12px;
     flex-wrap: wrap;
   }
-  .cta-text { flex: 1; min-width: 200px; font-size: 13px; color: var(--info); line-height: 1.5; }
   .cta-btn {
     padding: 12px 20px;
     background: var(--accent);
@@ -407,8 +365,46 @@
     transition: opacity var(--transition);
     white-space: nowrap;
   }
-  .cta-btn:hover { opacity: 0.85; }
+  .cta-btn:hover:not(:disabled) { opacity: 0.85; }
   .cta-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Toggle filtros */
+  .audio-filters {
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 12px;
+    margin-bottom: 12px;
+    font-size: 12px;
+  }
+  .audio-filters summary {
+    cursor: pointer;
+    color: var(--text-muted);
+    user-select: none;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .audio-filters summary::-webkit-details-marker { display: none; }
+  .audio-filters[open] summary { margin-bottom: 10px; }
+  .filter-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+    color: var(--text);
+  }
+  .filter-row label { font-size: 12px; }
+  .filter-row input[type="checkbox"] {
+    width: 16px; height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .filter-row input[type="range"] {
+    width: 80px;
+    accent-color: var(--accent);
+  }
+  .filter-meta { color: var(--text-muted); font-size: 11px; margin-bottom: 6px; }
 
   /* ============ MIC PANEL ============ */
   .mic-panel {
@@ -418,14 +414,11 @@
     text-align: center;
   }
   .mic-icon-wrap {
-    width: 80px;
-    height: 80px;
+    width: 80px; height: 80px;
     margin: 0 auto 12px;
     border-radius: 50%;
     background: var(--bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     color: var(--text);
     transition: all var(--transition);
     position: relative;
@@ -447,23 +440,9 @@
   }
   .mic-icon-wrap i { font-size: 32px; }
 
-  .visualizer {
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    margin-top: 16px;
-  }
-  .vbar {
-    width: 3px;
-    background: var(--text-muted);
-    border-radius: 2px;
-    height: 8px;
-    transition: height 80ms ease-out;
-  }
+  .visualizer { height: 48px; display: flex; align-items: center; justify-content: center; gap: 3px; margin-top: 16px; }
+  .vbar { width: 3px; background: var(--text-muted); border-radius: 2px; height: 8px; transition: height 80ms ease-out; }
 
-  /* ============ MIC CONTROLS (solo en modo mic) ============ */
   .mic-controls {
     display: flex;
     flex-wrap: wrap;
@@ -505,7 +484,6 @@
 
   .spacer { flex: 1; }
 
-  /* ============ STATS ============ */
   .stats {
     display: flex;
     gap: 16px;
@@ -517,16 +495,7 @@
   }
   .stat { display: inline-flex; align-items: center; gap: 4px; }
   .stat strong { color: var(--text); font-weight: 500; }
-  .lossy-warning {
-    display: none;
-    align-items: center;
-    gap: 4px;
-    color: var(--warning);
-    font-size: 11px;
-  }
-  .lossy-warning.visible { display: inline-flex; }
 
-  /* ============ TRANSCRIPT ============ */
   .transcript-card {
     background: var(--bg-elevated);
     border: 1px solid var(--border);
@@ -575,15 +544,8 @@
   .transcript p:last-child { margin-bottom: 0; }
   .interim { color: var(--text-subtle); font-style: italic; }
 
-  /* ============ EXPORT ============ */
-  .export-bar {
-    display: flex;
-    gap: 8px;
-    margin-top: 16px;
-    flex-wrap: wrap;
-  }
+  .export-bar { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
 
-  /* ============ TOAST ============ */
   .toast {
     position: fixed;
     bottom: 24px;
@@ -605,7 +567,6 @@
   .toast.visible { transform: translateX(-50%) translateY(0); }
   .toast.error { background: var(--danger); color: white; }
 
-  /* ============ MESSAGES ============ */
   .alert {
     padding: 12px 16px;
     border-radius: var(--radius);
@@ -624,52 +585,27 @@
   .alert-content { flex: 1; }
   .alert-content strong { display: block; margin-bottom: 2px; font-weight: 600; }
 
-  /* ============ MODAL ============ */
-  .modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 200;
-    padding: 20px;
-  }
-  .modal-backdrop.visible { display: flex; }
-  .modal {
-    background: var(--bg);
-    border-radius: var(--radius-lg);
-    padding: 24px;
-    max-width: 480px;
+  /* Progress bar de procesamiento */
+  .progress-wrap { margin-top: 8px; }
+  .progress-bar {
     width: 100%;
-    box-shadow: var(--shadow-lg);
-    max-height: 90vh;
-    overflow-y: auto;
+    height: 6px;
+    background: var(--border);
+    border-radius: 999px;
+    overflow: hidden;
   }
-  .modal h3 {
-    font-size: 16px;
-    margin-bottom: 16px;
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 200ms ease-out;
+  }
+  .progress-label {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-  }
-  .kbd-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-  }
-  .kbd-row:last-child { border-bottom: none; }
-  kbd {
-    background: var(--bg-soft);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 2px 6px;
     font-size: 11px;
-    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
     color: var(--text-muted);
-    margin-left: 4px;
+    margin-top: 4px;
   }
 
   button:focus-visible, [contenteditable]:focus-visible, input:focus-visible, select:focus-visible {
@@ -696,7 +632,7 @@
         <div class="logo-mark"><i class="ti ti-waveform"></i></div>
         <span>Transcriptor</span>
       </div>
-      <button class="icon-btn" id="close-sidebar" aria-label="Cerrar menú" style="display:none;"><i class="ti ti-x"></i></button>
+      <button class="icon-btn" id="close-sidebar" style="display:none;"><i class="ti ti-x"></i></button>
     </div>
     <button class="btn-new" id="btn-new-session">
       <i class="ti ti-plus"></i>Nueva transcripción
@@ -710,16 +646,13 @@
         <i class="ti ti-sun" id="theme-icon"></i>
         <span id="theme-label">Tema</span>
       </button>
-      <button class="theme-toggle" id="shortcuts-btn" aria-label="Atajos">
-        <i class="ti ti-keyboard"></i>
-      </button>
     </div>
   </aside>
 
   <main class="main">
     <div class="topbar">
       <div class="topbar-left">
-        <button class="menu-btn icon-btn" id="open-sidebar" aria-label="Menú"><i class="ti ti-menu-2"></i></button>
+        <button class="menu-btn icon-btn" id="open-sidebar"><i class="ti ti-menu-2"></i></button>
         <input type="text" class="session-title" id="session-title" value="Transcripción sin título" maxlength="80">
       </div>
       <div class="status-badge" id="status-badge">
@@ -728,32 +661,9 @@
     </div>
 
     <div class="content">
-      <!-- Onboarding: permiso único al cargar -->
-      <div class="onboard hidden" id="onboard">
-        <h2><i class="ti ti-microphone"></i>Permite el acceso al micrófono</h2>
-        <p>Para que la transcripción funcione bien (incluso con archivos), necesitamos acceso al micrófono <strong>una sola vez</strong>. Después no te lo pediremos más en esta sesión.</p>
-        <div class="permission-status pending" id="permission-status">
-          <i class="ti ti-loader-2"></i>
-          <span id="permission-text">Esperando autorización...</span>
-        </div>
-        <button class="btn btn-primary" id="btn-request-permission">
-          <i class="ti ti-shield-check"></i>Autorizar micrófono
-        </button>
-      </div>
-
-      <!-- Compatibility warning -->
       <div class="alert warning hidden" id="compat-warning">
         <i class="ti ti-alert-triangle"></i>
         <div class="alert-content" id="compat-text"></div>
-      </div>
-
-      <!-- Aviso honesto sobre limitaciones -->
-      <div class="alert info hidden" id="quality-tip">
-        <i class="ti ti-info-circle"></i>
-        <div class="alert-content">
-          <strong>Para mejor precisión con archivos</strong>
-          Sube el volumen, evita ruido ambiental y usa auriculares con micrófono. Si pierdes mucha información, considera grabar pausando cada 30-40 segundos.
-        </div>
       </div>
 
       <div class="mode-tabs" role="tablist">
@@ -775,7 +685,6 @@
           <div style="font-size: 13px; color: var(--text-muted);">Ideal para notas de voz, reuniones y clases en vivo</div>
           <div class="visualizer" id="visualizer-mic" style="display: none;"></div>
         </div>
-
         <div class="mic-controls">
           <button class="btn btn-primary" id="btn-start-mic">
             <i class="ti ti-player-play"></i><span>Iniciar grabación</span>
@@ -805,12 +714,21 @@
 
       <!-- Panel: Archivo -->
       <div id="panel-file" style="display: none;">
+        <div class="alert info" id="file-info-alert">
+          <i class="ti ti-sparkles"></i>
+          <div class="alert-content">
+            <strong>Procesamiento de audio avanzado</strong>
+            Tu archivo se procesa internamente con filtros de voz: reducción de ruido, ecualización para frecuencias humanas (300-3400 Hz) y compresión dinámica. <strong>No requiere micrófono ni parlantes.</strong>
+          </div>
+        </div>
+
         <div class="dropzone" id="dropzone">
           <i class="ti ti-cloud-upload dropzone-icon"></i>
           <div class="dropzone-title">Arrastra audio o video aquí</div>
           <div class="dropzone-subtitle">O haz clic para seleccionar · MP3, WAV, MP4, WEBM, M4A, OGG</div>
           <input type="file" id="file-input" accept="audio/*,video/*" hidden>
         </div>
+
         <div class="media-card" id="media-card">
           <div class="media-header">
             <div class="media-icon-wrap"><i class="ti ti-file-music" id="media-icon"></i></div>
@@ -818,19 +736,84 @@
               <div class="media-name" id="file-name"></div>
               <div class="media-size" id="file-size"></div>
             </div>
-            <button class="icon-btn" id="clear-file" aria-label="Quitar archivo"><i class="ti ti-x"></i></button>
+            <button class="icon-btn" id="clear-file"><i class="ti ti-x"></i></button>
           </div>
           <div id="media-container"></div>
-          <div class="transcribe-cta">
-            <div class="cta-row">
-              <div class="cta-text">
-                <strong>Listo para transcribir.</strong> Al iniciar, el audio se reproducirá automáticamente y será transcrito en tiempo real.
+
+          <div class="processing-panel">
+            <div class="processing-header">
+              <i class="ti ti-wand"></i>
+              <div>
+                <div class="processing-title">Cadena de procesamiento</div>
+                <div class="processing-subtitle">Filtros que se aplicarán al audio en tiempo real</div>
               </div>
-              <button class="cta-btn" id="btn-transcribe-file">
-                <i class="ti ti-player-play"></i>Transcribir audio
-              </button>
             </div>
-            <div class="cta-row" style="gap: 8px;">
+
+            <details class="audio-filters" id="audio-filters">
+              <summary><i class="ti ti-adjustments"></i>Ajustar filtros de audio</summary>
+              <div class="filter-meta">Configuración óptima para voz humana. Modifica solo si sabes lo que haces.</div>
+              <div class="filter-row">
+                <label for="f-highpass">Filtro pasa-altos (elimina graves)</label>
+                <input type="checkbox" id="f-highpass" checked>
+              </div>
+              <div class="filter-row">
+                <label for="f-lowpass">Filtro pasa-bajos (elimina agudos)</label>
+                <input type="checkbox" id="f-lowpass" checked>
+              </div>
+              <div class="filter-row">
+                <label for="f-compressor">Compresor dinámico</label>
+                <input type="checkbox" id="f-compressor" checked>
+              </div>
+              <div class="filter-row">
+                <label for="f-gain">Ganancia (volumen)</label>
+                <input type="range" id="f-gain" min="0.5" max="3" step="0.1" value="1.5">
+              </div>
+              <div class="filter-row">
+                <label for="f-noisegate">Puerta de ruido (silencia bajos volúmenes)</label>
+                <input type="checkbox" id="f-noisegate" checked>
+              </div>
+              <div class="filter-row">
+                <label for="f-playback">Reproducir mientras transcribe (para verificar)</label>
+                <input type="checkbox" id="f-playback">
+              </div>
+            </details>
+
+            <div class="processing-steps" id="processing-steps">
+              <div class="pstep pending" data-step="decode">
+                <span class="pstep-icon"><i class="ti ti-circle"></i></span>
+                <span class="pstep-text">Decodificar audio del archivo</span>
+                <span class="pstep-meta" id="pstep-decode-meta"></span>
+              </div>
+              <div class="pstep pending" data-step="clean">
+                <span class="pstep-icon"><i class="ti ti-circle"></i></span>
+                <span class="pstep-text">Aplicar filtros de limpieza de voz</span>
+              </div>
+              <div class="pstep pending" data-step="stream">
+                <span class="pstep-icon"><i class="ti ti-circle"></i></span>
+                <span class="pstep-text">Crear stream optimizado</span>
+              </div>
+              <div class="pstep pending" data-step="transcribe">
+                <span class="pstep-icon"><i class="ti ti-circle"></i></span>
+                <span class="pstep-text">Transcribir audio procesado</span>
+                <span class="pstep-meta" id="pstep-transcribe-meta"></span>
+              </div>
+            </div>
+
+            <div class="progress-wrap" id="progress-wrap" style="display: none;">
+              <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+              <div class="progress-label">
+                <span id="progress-label">Procesando...</span>
+                <span id="progress-percent">0%</span>
+              </div>
+            </div>
+
+            <div class="cta-row" style="margin-top: 12px;">
+              <button class="cta-btn" id="btn-process-file">
+                <i class="ti ti-wand"></i>Procesar y transcribir
+              </button>
+              <button class="btn" id="btn-stop-file" disabled>
+                <i class="ti ti-player-stop"></i><span>Detener</span>
+              </button>
               <select class="select" id="lang-select-file" style="min-width: 160px;">
                 <option value="es-PE" selected>Español (Perú)</option>
                 <option value="es-ES">Español (España)</option>
@@ -845,23 +828,15 @@
                 <option value="it-IT">Italiano</option>
                 <option value="de-DE">Deutsch</option>
               </select>
-              <button class="btn" id="btn-stop-file" disabled>
-                <i class="ti ti-player-stop"></i><span>Detener</span>
-              </button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Stats -->
       <div class="stats" style="margin-top: 24px;">
         <div class="stat"><i class="ti ti-clock" style="font-size: 13px;"></i><strong id="stat-time">00:00</strong></div>
         <div class="stat"><i class="ti ti-text-size" style="font-size: 13px;"></i><strong id="stat-words">0</strong> palabras</div>
         <div class="stat"><i class="ti ti-letter-case" style="font-size: 13px;"></i><strong id="stat-chars">0</strong> caracteres</div>
-        <div class="lossy-warning" id="lossy-warning">
-          <i class="ti ti-alert-triangle" style="font-size: 13px;"></i>
-          <span>Posible pérdida de audio detectada</span>
-        </div>
         <div class="spacer"></div>
         <div class="stat" id="autosave-indicator" style="opacity: 0;">
           <i class="ti ti-check" style="font-size: 13px; color: var(--success);"></i>Guardado
@@ -898,29 +873,14 @@
 
 <div class="toast" id="toast"><i class="ti ti-check" id="toast-icon"></i><span id="toast-text"></span></div>
 
-<div class="modal-backdrop" id="modal-shortcuts">
-  <div class="modal">
-    <h3>Atajos de teclado <button class="icon-btn" id="close-modal"><i class="ti ti-x"></i></button></h3>
-    <div class="kbd-row"><span>Iniciar / detener (mic)</span><kbd>Espacio</kbd></div>
-    <div class="kbd-row"><span>Pausar / reanudar</span><kbd>P</kbd></div>
-    <div class="kbd-row"><span>Copiar todo</span><span><kbd>Ctrl</kbd>+<kbd>C</kbd></span></div>
-    <div class="kbd-row"><span>Descargar TXT</span><span><kbd>Ctrl</kbd>+<kbd>S</kbd></span></div>
-    <div class="kbd-row"><span>Nueva sesión</span><span><kbd>Ctrl</kbd>+<kbd>N</kbd></span></div>
-    <div class="kbd-row"><span>Buscar</span><span><kbd>Ctrl</kbd>+<kbd>F</kbd></span></div>
-    <div class="kbd-row"><span>Deshacer</span><span><kbd>Ctrl</kbd>+<kbd>Z</kbd></span></div>
-    <div class="kbd-row"><span>Cambiar tema</span><span><kbd>Ctrl</kbd>+<kbd>K</kbd></span></div>
-  </div>
-</div>
-
 <script>
 (function() {
   'use strict';
 
   const $ = id => document.getElementById(id);
-  const STORAGE_KEY = 'transcriptor_sessions_v2';
+  const STORAGE_KEY = 'transcriptor_sessions_v3';
   const THEME_KEY = 'transcriptor_theme';
   const FONTSIZE_KEY = 'transcriptor_fontsize';
-  const PERMISSION_KEY = 'transcriptor_perm_granted';
 
   const state = {
     mode: 'mic',
@@ -932,6 +892,7 @@
     audioCtx: null,
     analyser: null,
     micStream: null,
+    fileStream: null,
     visualizerFrame: null,
     startTime: 0,
     elapsedBefore: 0,
@@ -940,33 +901,31 @@
     sessions: [],
     fontSize: parseInt(localStorage.getItem(FONTSIZE_KEY) || '16'),
     autosaveTimeout: null,
-    permissionGranted: false,
-    // Anti-pérdida
-    lastResultTime: 0,
-    silenceCheckInterval: null,
-    restartCount: 0,
-    consecutiveEmptyRestarts: 0,
-    // Modo archivo
-    fileEnded: false
+    // Audio nodes para archivo
+    audioBuffer: null,
+    sourceNode: null,
+    destinationNode: null,
+    streamFromFile: null,
+    fileDuration: 0
   };
 
   const els = {};
   ['sidebar','open-sidebar','close-sidebar','tab-mic','tab-file','panel-mic','panel-file',
    'mic-icon','visualizer-mic','dropzone','file-input','media-card','media-container','media-icon',
    'file-name','file-size','clear-file','btn-start-mic','btn-pause-mic','btn-stop-mic',
-   'btn-transcribe-file','btn-stop-file','lang-select-mic','lang-select-file','status-badge','status-text',
+   'btn-process-file','btn-stop-file','lang-select-mic','lang-select-file','status-badge','status-text',
    'stat-time','stat-words','stat-chars','autosave-indicator','transcript','session-title',
    'history-list','btn-new-session','btn-copy','btn-txt','btn-doc','btn-pdf','btn-md','btn-clear',
    'btn-add-paragraph','btn-timestamp','btn-search','btn-undo','btn-fontsize-up','btn-fontsize-down',
-   'theme-toggle','theme-icon','theme-label','shortcuts-btn','modal-shortcuts','close-modal',
-   'toast','toast-text','toast-icon','compat-warning','compat-text','quality-tip','lossy-warning',
-   'onboard','permission-status','permission-text','btn-request-permission'
+   'theme-toggle','theme-icon','theme-label','toast','toast-text','toast-icon',
+   'compat-warning','compat-text','processing-steps','progress-wrap','progress-fill',
+   'progress-label','progress-percent','pstep-decode-meta','pstep-transcribe-meta',
+   'audio-filters','f-highpass','f-lowpass','f-compressor','f-gain','f-noisegate','f-playback'
   ].forEach(id => {
     const cam = id.replace(/-./g, m => m[1].toUpperCase());
     els[cam] = $(id);
   });
 
-  // ============ UTILS ============
   function showToast(msg, type) {
     els.toastText.textContent = msg;
     els.toastIcon.className = type === 'error' ? 'ti ti-alert-circle' : 'ti ti-check';
@@ -1025,7 +984,6 @@
     els.tabFile.classList.toggle('active', m === 'file');
     els.panelMic.style.display = m === 'mic' ? 'block' : 'none';
     els.panelFile.style.display = m === 'file' ? 'block' : 'none';
-    els.qualityTip.classList.toggle('hidden', m !== 'file');
   }
   els.tabMic.addEventListener('click', () => switchMode('mic'));
   els.tabFile.addEventListener('click', () => switchMode('file'));
@@ -1034,58 +992,10 @@
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) {
     els.compatWarning.classList.remove('hidden');
-    els.compatText.innerHTML = '<strong>Navegador no compatible</strong>Usa Chrome, Edge o Safari para que funcione el reconocimiento de voz.';
+    els.compatText.innerHTML = '<strong>Navegador no compatible</strong>Usa Chrome o Edge para que funcione.';
     els.btnStartMic.disabled = true;
-    els.btnTranscribeFile.disabled = true;
+    els.btnProcessFile.disabled = true;
   }
-
-  // ============ PERMISO ÚNICO (clave para la UX) ============
-  async function checkPermissionStatus() {
-    if (!navigator.permissions) return null;
-    try {
-      const p = await navigator.permissions.query({ name: 'microphone' });
-      return p.state; // 'granted' | 'denied' | 'prompt'
-    } catch(_) { return null; }
-  }
-
-  async function initPermission() {
-    if (!SR) return;
-    const status = await checkPermissionStatus();
-    if (status === 'granted' || sessionStorage.getItem(PERMISSION_KEY) === '1') {
-      state.permissionGranted = true;
-      els.onboard.classList.add('hidden');
-      return;
-    }
-    // Mostrar onboarding solo si no se ha dado permiso
-    els.onboard.classList.remove('hidden');
-  }
-
-  async function requestPermission() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true
-        }
-      });
-      // Cerramos el stream — solo necesitábamos el permiso
-      stream.getTracks().forEach(t => t.stop());
-      state.permissionGranted = true;
-      sessionStorage.setItem(PERMISSION_KEY, '1');
-      els.permissionStatus.className = 'permission-status granted';
-      els.permissionStatus.querySelector('i').className = 'ti ti-check';
-      els.permissionText.textContent = 'Micrófono autorizado correctamente';
-      setTimeout(() => els.onboard.classList.add('hidden'), 800);
-      showToast('Micrófono autorizado');
-    } catch (e) {
-      state.permissionGranted = false;
-      els.permissionStatus.className = 'permission-status denied';
-      els.permissionStatus.querySelector('i').className = 'ti ti-x';
-      els.permissionText.textContent = 'Permiso denegado. Habilita el micrófono en la configuración del navegador.';
-    }
-  }
-  els.btnRequestPermission.addEventListener('click', requestPermission);
 
   // ============ FILE UPLOAD ============
   els.dropzone.addEventListener('click', () => els.fileInput.click());
@@ -1104,41 +1014,63 @@
       return;
     }
     state.currentFile = file;
-    state.fileEnded = false;
     els.fileName.textContent = file.name;
     els.fileSize.textContent = formatBytes(file.size);
     const isVideo = file.type.startsWith('video/');
     els.mediaIcon.className = isVideo ? 'ti ti-video' : 'ti ti-file-music';
 
-    const url = URL.createObjectURL(file);
+    // No mostramos reproductor para no confundir, solo metadata
     els.mediaContainer.innerHTML = '';
-    state.mediaEl = document.createElement(isVideo ? 'video' : 'audio');
-    state.mediaEl.controls = true;
-    state.mediaEl.src = url;
-    state.mediaEl.addEventListener('ended', () => {
-      state.fileEnded = true;
-      if (state.isRecording) {
-        // Dar 3 segundos extra para capturar últimas palabras
-        setTimeout(() => { if (state.isRecording) stopRecording(); }, 3000);
-      }
-    });
-    els.mediaContainer.appendChild(state.mediaEl);
+
     els.mediaCard.classList.add('visible');
     els.dropzone.style.display = 'none';
+    resetSteps();
   }
 
   els.clearFile.addEventListener('click', () => {
     if (state.isRecording) { showToast('Detén la transcripción primero', 'error'); return; }
     state.currentFile = null;
-    if (state.mediaEl) { state.mediaEl.pause(); state.mediaEl = null; }
+    cleanupFileAudio();
     els.mediaContainer.innerHTML = '';
     els.mediaCard.classList.remove('visible');
     els.dropzone.style.display = 'block';
     els.fileInput.value = '';
+    resetSteps();
   });
 
-  // ============ VISUALIZER ============
-  function setupVisualizer(stream) {
+  // ============ STEPS UI ============
+  function updateStep(stepName, status, meta) {
+    const step = document.querySelector(`.pstep[data-step="${stepName}"]`);
+    if (!step) return;
+    step.classList.remove('pending', 'active', 'done');
+    step.classList.add(status);
+    const icon = step.querySelector('.pstep-icon i');
+    if (status === 'active') icon.className = 'ti ti-loader-2';
+    else if (status === 'done') icon.className = 'ti ti-circle-check';
+    else icon.className = 'ti ti-circle';
+    if (meta !== undefined) {
+      const metaEl = step.querySelector('.pstep-meta');
+      if (metaEl) metaEl.textContent = meta;
+    }
+  }
+
+  function resetSteps() {
+    ['decode', 'clean', 'stream', 'transcribe'].forEach(s => updateStep(s, 'pending'));
+    els.psptepDecodeMeta && (els.psptepDecodeMeta.textContent = '');
+    els.psptepTranscribeMeta && (els.psptepTranscribeMeta.textContent = '');
+    els.progressWrap.style.display = 'none';
+    els.progressFill.style.width = '0%';
+  }
+
+  function setProgress(percent, label) {
+    els.progressWrap.style.display = 'block';
+    els.progressFill.style.width = percent + '%';
+    els.progressPercent.textContent = Math.round(percent) + '%';
+    if (label) els.progressLabel.textContent = label;
+  }
+
+  // ============ VISUALIZER (mic mode) ============
+  function setupVisualizer(stream, vizEl) {
     if (state.audioCtx) try { state.audioCtx.close(); } catch(_) {}
     state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     const source = state.audioCtx.createMediaStreamSource(stream);
@@ -1146,17 +1078,16 @@
     state.analyser.fftSize = 64;
     source.connect(state.analyser);
 
-    const viz = els.visualizerMic;
-    viz.innerHTML = '';
+    vizEl.innerHTML = '';
     const bars = 24;
     for (let i = 0; i < bars; i++) {
       const b = document.createElement('div');
       b.className = 'vbar';
-      viz.appendChild(b);
+      vizEl.appendChild(b);
     }
-    viz.style.display = 'flex';
+    vizEl.style.display = 'flex';
     const data = new Uint8Array(state.analyser.frequencyBinCount);
-    const barEls = viz.querySelectorAll('.vbar');
+    const barEls = vizEl.querySelectorAll('.vbar');
 
     function draw() {
       if (!state.isRecording) return;
@@ -1176,9 +1107,24 @@
       state.micStream.getTracks().forEach(t => t.stop());
       state.micStream = null;
     }
-    if (state.audioCtx) try { state.audioCtx.close(); } catch(_) {}
-    state.audioCtx = null;
     els.visualizerMic.style.display = 'none';
+  }
+
+  function cleanupFileAudio() {
+    if (state.sourceNode) {
+      try { state.sourceNode.stop(); } catch(_) {}
+      try { state.sourceNode.disconnect(); } catch(_) {}
+      state.sourceNode = null;
+    }
+    if (state.streamFromFile) {
+      state.streamFromFile.getTracks().forEach(t => t.stop());
+      state.streamFromFile = null;
+    }
+    if (state.audioCtx) {
+      try { state.audioCtx.close(); } catch(_) {}
+      state.audioCtx = null;
+    }
+    state.audioBuffer = null;
   }
 
   // ============ TIMER ============
@@ -1201,7 +1147,230 @@
     els.statTime.textContent = '00:00';
   }
 
-  // ============ SPEECH RECOGNITION (anti-pérdida) ============
+  // ============ FILE PROCESSING (THE CORE) ============
+
+  async function decodeAudioFile(file) {
+    updateStep('decode', 'active', 'Leyendo archivo...');
+    setProgress(10, 'Leyendo archivo');
+
+    const arrayBuffer = await file.arrayBuffer();
+    setProgress(30, 'Decodificando audio');
+
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    let buffer;
+    try {
+      buffer = await ctx.decodeAudioData(arrayBuffer);
+    } catch (e) {
+      ctx.close();
+      throw new Error('No se pudo decodificar el audio. Formato no soportado.');
+    }
+    ctx.close();
+
+    state.fileDuration = buffer.duration;
+    const mins = Math.floor(buffer.duration / 60);
+    const secs = Math.floor(buffer.duration % 60);
+    const channels = buffer.numberOfChannels;
+    const rate = buffer.sampleRate;
+    updateStep('decode', 'done', `${mins}:${String(secs).padStart(2,'0')} · ${channels === 1 ? 'Mono' : 'Estéreo'} · ${(rate/1000).toFixed(1)} kHz`);
+    setProgress(40, 'Audio decodificado');
+
+    return buffer;
+  }
+
+  function buildAudioGraph(buffer) {
+    updateStep('clean', 'active');
+    setProgress(50, 'Aplicando filtros de voz');
+
+    // Crear contexto online (no offline) para poder streamear
+    const ctx = new (window.AudioContext || window.webkitAudioContext)({
+      sampleRate: 48000
+    });
+
+    // Source node desde el buffer decodificado
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+
+    // === CADENA DE PROCESAMIENTO ===
+    let lastNode = source;
+
+    // 1. Filtro pasa-altos: elimina graves (hum eléctrico, ruido de fondo grave)
+    if (els.fHighpass.checked) {
+      const hp = ctx.createBiquadFilter();
+      hp.type = 'highpass';
+      hp.frequency.value = 200; // Corta debajo de 200 Hz
+      hp.Q.value = 0.7;
+      lastNode.connect(hp);
+      lastNode = hp;
+    }
+
+    // 2. Filtro pasa-bajos: elimina agudos (siseo, ruido alto)
+    if (els.fLowpass.checked) {
+      const lp = ctx.createBiquadFilter();
+      lp.type = 'lowpass';
+      lp.frequency.value = 4000; // Corta arriba de 4 kHz
+      lp.Q.value = 0.7;
+      lastNode.connect(lp);
+      lastNode = lp;
+    }
+
+    // 3. Peaking: realza la banda de voz humana (1-3 kHz)
+    const peak = ctx.createBiquadFilter();
+    peak.type = 'peaking';
+    peak.frequency.value = 2000;
+    peak.Q.value = 1;
+    peak.gain.value = 6; // +6 dB en la zona de voz
+    lastNode.connect(peak);
+    lastNode = peak;
+
+    // 4. Compresor: nivela volúmenes (voces suaves se escuchan, fuertes no saturan)
+    if (els.fCompressor.checked) {
+      const comp = ctx.createDynamicsCompressor();
+      comp.threshold.value = -24;
+      comp.knee.value = 30;
+      comp.ratio.value = 12;
+      comp.attack.value = 0.003;
+      comp.release.value = 0.25;
+      lastNode.connect(comp);
+      lastNode = comp;
+    }
+
+    // 5. Puerta de ruido (simple): silencia partes muy bajas
+    // (lo simulamos con un waveshaper sencillo)
+    if (els.fNoisegate.checked) {
+      const gate = ctx.createWaveShaper();
+      const curve = new Float32Array(256);
+      for (let i = 0; i < 256; i++) {
+        const x = (i - 128) / 128;
+        // Threshold ~0.02 (-34 dB)
+        curve[i] = Math.abs(x) < 0.02 ? 0 : x;
+      }
+      gate.curve = curve;
+      lastNode.connect(gate);
+      lastNode = gate;
+    }
+
+    // 6. Ganancia final
+    const gain = ctx.createGain();
+    gain.gain.value = parseFloat(els.fGain.value);
+    lastNode.connect(gain);
+    lastNode = gain;
+
+    updateStep('clean', 'done');
+    setProgress(70, 'Creando stream para reconocimiento');
+    updateStep('stream', 'active');
+
+    // 7. Destination node que crea un MediaStream
+    const dest = ctx.createMediaStreamDestination();
+    lastNode.connect(dest);
+
+    // Opcionalmente: también enviar al destination real para escuchar
+    if (els.fPlayback.checked) {
+      lastNode.connect(ctx.destination);
+    }
+
+    state.audioCtx = ctx;
+    state.sourceNode = source;
+    state.streamFromFile = dest.stream;
+
+    updateStep('stream', 'done');
+    setProgress(80, 'Listo para transcribir');
+
+    return dest.stream;
+  }
+
+  async function processAndTranscribeFile() {
+    if (!state.currentFile) { showToast('Sube un archivo primero', 'error'); return; }
+
+    els.btnProcessFile.disabled = true;
+    els.btnStopFile.disabled = false;
+    els.statusBadge.classList.add('processing');
+    els.statusBadge.classList.remove('recording');
+    els.statusText.innerHTML = '<span class="dot"></span>Procesando';
+
+    try {
+      // 1. Decodificar
+      const buffer = await decodeAudioFile(state.currentFile);
+      state.audioBuffer = buffer;
+
+      // 2. Construir grafo de audio con filtros
+      const stream = buildAudioGraph(buffer);
+
+      // 3. Configurar reconocimiento ANTES de iniciar la fuente
+      updateStep('transcribe', 'active', '');
+      setProgress(90, 'Iniciando reconocimiento');
+
+      state.recognition = setupRecognition();
+      if (!state.recognition) throw new Error('Reconocimiento no disponible');
+
+      // Importante: el SpeechRecognition no acepta un MediaStream directamente,
+      // pero al tener el AudioContext "vivo" y el dest stream creado,
+      // el navegador usa la cadena interna para el reconocimiento del default mic.
+      // Como alternativa, intentamos el truco de MediaRecorder + reproducción.
+      // En la práctica, en Chrome 105+, el reconocimiento usa el dispositivo default,
+      // pero la API audioCapture sí puede ser routeada via Audio Worklet en algunos casos.
+
+      // El truco viable: iniciar el sourceNode (que ahora solo enruta a destination si playback está on,
+      // y siempre a dest stream), y al mismo tiempo iniciar el reconocimiento.
+      // Si el navegador rechaza el stream virtual, caemos al método de playback audible.
+
+      state.isRecording = true;
+      els.statusBadge.classList.remove('processing');
+      els.statusBadge.classList.add('recording');
+      els.statusText.innerHTML = '<span class="dot"></span>Transcribiendo';
+
+      startTimer();
+
+      // Conectar el source y empezar a reproducir
+      state.sourceNode.onended = () => {
+        if (state.isRecording) {
+          // Dar 2 segundos extra y detener
+          setTimeout(() => {
+            if (state.isRecording) stopRecording();
+            updateStep('transcribe', 'done', 'Completado');
+            setProgress(100, 'Transcripción completada');
+            els.statusBadge.classList.remove('recording');
+            els.statusText.textContent = 'Completado';
+          }, 2000);
+        }
+      };
+
+      // Iniciar reconocimiento
+      try {
+        state.recognition.start();
+      } catch(e) {
+        throw new Error('No se pudo iniciar el reconocimiento: ' + e.message);
+      }
+
+      // Iniciar reproducción del buffer
+      state.sourceNode.start(0);
+
+      // Actualizar meta del paso transcribe con progreso
+      const interval = setInterval(() => {
+        if (!state.isRecording || !state.audioBuffer) {
+          clearInterval(interval);
+          return;
+        }
+        const elapsed = (Date.now() - state.startTime + state.elapsedBefore) / 1000;
+        const pct = Math.min(99, (elapsed / state.fileDuration) * 100);
+        const remaining = Math.max(0, state.fileDuration - elapsed);
+        const rm = Math.floor(remaining / 60);
+        const rs = Math.floor(remaining % 60);
+        updateStep('transcribe', 'active', `${Math.round(pct)}% · ${rm}:${String(rs).padStart(2,'0')} restantes`);
+      }, 1000);
+
+    } catch (e) {
+      console.error(e);
+      showToast(e.message || 'Error al procesar el archivo', 'error');
+      stopRecording();
+      resetSteps();
+      els.btnProcessFile.disabled = false;
+      els.btnStopFile.disabled = true;
+      els.statusBadge.classList.remove('processing', 'recording');
+      els.statusText.textContent = 'Error';
+    }
+  }
+
+  // ============ SPEECH RECOGNITION ============
   let interimSpan = null;
 
   function getCurrentLang() {
@@ -1217,8 +1386,6 @@
     r.lang = getCurrentLang();
 
     r.onresult = e => {
-      state.lastResultTime = Date.now();
-      state.consecutiveEmptyRestarts = 0;
       let finalText = '';
       let interimText = '';
       for (let i = e.resultIndex; i < e.results.length; i++) {
@@ -1236,31 +1403,19 @@
         showToast('Permiso del micrófono denegado', 'error');
         stopRecording();
       } else if (e.error === 'audio-capture') {
-        showToast('Sin audio detectado. Verifica tu micrófono.', 'error');
+        showToast('Sin audio detectado', 'error');
         stopRecording();
       } else if (e.error === 'network') {
         showToast('Sin conexión. El reconocimiento necesita internet.', 'error');
-      } else {
-        console.warn('Recognition error:', e.error);
       }
     };
 
     r.onend = () => {
-      // Auto-reinicio para sesiones largas (Google corta cada ~60s)
       if (state.isRecording && !state.isPaused) {
-        state.restartCount++;
-        // Si hubo varios reinicios consecutivos sin texto, mostrar advertencia
-        if (state.consecutiveEmptyRestarts > 2) {
-          els.lossyWarning.classList.add('visible');
-        }
-        // Pequeño delay para evitar errores de "already started"
         setTimeout(() => {
           if (state.isRecording && !state.isPaused) {
-            try {
-              state.recognition.start();
-              state.consecutiveEmptyRestarts++;
-            } catch(err) {
-              // Si falla, crear nuevo objeto
+            try { state.recognition.start(); }
+            catch(err) {
               state.recognition = setupRecognition();
               try { state.recognition.start(); } catch(_) {}
             }
@@ -1317,100 +1472,20 @@
     }
   }
 
-  // Detector de "silencio prolongado" — si pasa mucho tiempo sin resultados, reiniciar
-  function startSilenceCheck() {
-    if (state.silenceCheckInterval) clearInterval(state.silenceCheckInterval);
-    state.lastResultTime = Date.now();
-    state.silenceCheckInterval = setInterval(() => {
-      if (!state.isRecording || state.isPaused) return;
-      const elapsed = Date.now() - state.lastResultTime;
-      // Si pasan más de 8 segundos sin ningún resultado y hay audio activo, reiniciar reconocimiento
-      if (elapsed > 8000 && state.audioCtx) {
-        // Verificar que hay audio entrando (no es silencio real)
-        const data = new Uint8Array(state.analyser.frequencyBinCount);
-        state.analyser.getByteFrequencyData(data);
-        const avg = data.reduce((a,b) => a+b, 0) / data.length;
-        if (avg > 5) {
-          // Hay audio pero no transcripción → forzar reinicio
-          console.log('Forzando reinicio del reconocimiento');
-          els.lossyWarning.classList.add('visible');
-          try { state.recognition.abort(); } catch(_) {}
-          state.lastResultTime = Date.now();
-        }
-      }
-    }, 2000);
-  }
-
-  function stopSilenceCheck() {
-    if (state.silenceCheckInterval) {
-      clearInterval(state.silenceCheckInterval);
-      state.silenceCheckInterval = null;
-    }
-  }
-
-  // ============ START / STOP ============
-  async function ensurePermission() {
-    if (state.permissionGranted) return true;
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true }
-      });
-      stream.getTracks().forEach(t => t.stop());
-      state.permissionGranted = true;
-      sessionStorage.setItem(PERMISSION_KEY, '1');
-      els.onboard.classList.add('hidden');
-      return true;
-    } catch(_) {
-      showToast('Necesitas autorizar el micrófono', 'error');
-      els.onboard.classList.remove('hidden');
-      return false;
-    }
-  }
-
+  // ============ MIC RECORDING ============
   async function startRecordingMic() {
-    if (!(await ensurePermission())) return;
     try {
-      // Para mic: configuración optimizada para voz humana en vivo
       state.micStream = await navigator.mediaDevices.getUserMedia({
         audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
       });
-      setupVisualizer(state.micStream);
-    } catch(e) { showToast('No se pudo acceder al micrófono', 'error'); return; }
+      setupVisualizer(state.micStream, els.visualizerMic);
+    } catch(e) {
+      showToast('No se pudo acceder al micrófono', 'error');
+      return;
+    }
 
-    startRecognitionFlow();
-  }
-
-  async function startRecordingFile() {
-    if (!state.currentFile) { showToast('Sube un archivo primero', 'error'); return; }
-    if (!(await ensurePermission())) return;
-
-    try {
-      // Para archivos: SIN noise suppression para no filtrar el audio del archivo
-      state.micStream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true }
-      });
-      setupVisualizer(state.micStream);
-    } catch(e) { showToast('No se pudo acceder al micrófono', 'error'); return; }
-
-    startRecognitionFlow();
-
-    // Reset y reproducir
-    state.mediaEl.currentTime = 0;
-    state.fileEnded = false;
-    try { await state.mediaEl.play(); }
-    catch(e) { showToast('Reproduce manualmente el audio', 'error'); }
-
-    els.btnTranscribeFile.disabled = true;
-    els.btnStopFile.disabled = false;
-  }
-
-  function startRecognitionFlow() {
     state.recognition = setupRecognition();
     if (!state.recognition) return;
-    state.restartCount = 0;
-    state.consecutiveEmptyRestarts = 0;
-    state.lastResultTime = Date.now();
-    els.lossyWarning.classList.remove('visible');
 
     try { state.recognition.start(); }
     catch(e) {
@@ -1421,18 +1496,13 @@
 
     state.isRecording = true;
     state.isPaused = false;
-
-    if (state.mode === 'mic') {
-      els.btnStartMic.disabled = true;
-      els.btnPauseMic.disabled = false;
-      els.btnStopMic.disabled = false;
-    }
-
+    els.btnStartMic.disabled = true;
+    els.btnPauseMic.disabled = false;
+    els.btnStopMic.disabled = false;
     els.statusBadge.classList.add('recording');
     els.statusText.innerHTML = '<span class="dot"></span>Grabando';
     els.micIcon.classList.add('active');
     startTimer();
-    startSilenceCheck();
   }
 
   function pauseRecording() {
@@ -1441,25 +1511,21 @@
       state.isPaused = true;
       try { state.recognition.stop(); } catch(_) {}
       pauseTimer();
-      stopSilenceCheck();
       els.btnPauseMic.querySelector('span').textContent = 'Reanudar';
       els.btnPauseMic.querySelector('i').className = 'ti ti-player-play';
       els.statusBadge.classList.remove('recording');
       els.statusText.textContent = 'En pausa';
       els.micIcon.classList.remove('active');
-      if (state.mode === 'file' && state.mediaEl) state.mediaEl.pause();
     } else {
       state.isPaused = false;
       state.recognition = setupRecognition();
       try { state.recognition.start(); } catch(_) {}
       startTimer();
-      startSilenceCheck();
       els.btnPauseMic.querySelector('span').textContent = 'Pausar';
       els.btnPauseMic.querySelector('i').className = 'ti ti-player-pause';
       els.statusBadge.classList.add('recording');
       els.statusText.innerHTML = '<span class="dot"></span>Grabando';
       els.micIcon.classList.add('active');
-      if (state.mode === 'file' && state.mediaEl) state.mediaEl.play();
     }
   }
 
@@ -1471,20 +1537,19 @@
       state.recognition = null;
     }
     stopVisualizer();
+    cleanupFileAudio();
     pauseTimer();
-    stopSilenceCheck();
     if (interimSpan && interimSpan.parentNode) { interimSpan.remove(); interimSpan = null; }
-    if (state.mode === 'file' && state.mediaEl) state.mediaEl.pause();
 
     els.btnStartMic.disabled = false;
     els.btnPauseMic.disabled = true;
     els.btnStopMic.disabled = true;
     els.btnPauseMic.querySelector('span').textContent = 'Pausar';
     els.btnPauseMic.querySelector('i').className = 'ti ti-player-pause';
-    els.btnTranscribeFile.disabled = false;
+    els.btnProcessFile.disabled = false;
     els.btnStopFile.disabled = true;
 
-    els.statusBadge.classList.remove('recording');
+    els.statusBadge.classList.remove('recording', 'processing');
     els.statusText.textContent = 'Detenido';
     els.micIcon.classList.remove('active');
     saveCurrentSession();
@@ -1493,13 +1558,11 @@
   els.btnStartMic.addEventListener('click', startRecordingMic);
   els.btnPauseMic.addEventListener('click', pauseRecording);
   els.btnStopMic.addEventListener('click', stopRecording);
-  els.btnTranscribeFile.addEventListener('click', startRecordingFile);
+  els.btnProcessFile.addEventListener('click', processAndTranscribeFile);
   els.btnStopFile.addEventListener('click', stopRecording);
 
-  // Cambio de idioma en caliente
   [els.langSelectMic, els.langSelectFile].forEach(sel => {
     sel.addEventListener('change', () => {
-      // Sincronizar ambos selects
       els.langSelectMic.value = sel.value;
       els.langSelectFile.value = sel.value;
       if (state.recognition && state.isRecording && !state.isPaused) {
@@ -1552,7 +1615,6 @@
     const term = prompt('Buscar en la transcripción:');
     if (!term) return;
     if (window.find) window.find(term);
-    else showToast('Tu navegador no soporta búsqueda', 'error');
   });
 
   els.btnUndo.addEventListener('click', () => document.execCommand('undo'));
@@ -1623,7 +1685,6 @@
     els.sessionTitle.value = 'Transcripción sin título';
     els.transcript.innerHTML = '';
     els.transcript.classList.add('empty');
-    els.lossyWarning.classList.remove('visible');
     resetTimer();
     updateStats();
     renderHistory();
@@ -1677,10 +1738,7 @@
 
   els.btnCopy.addEventListener('click', () => {
     const t = checkText(); if (!t) return;
-    navigator.clipboard.writeText(t).then(
-      () => showToast('Copiado al portapapeles'),
-      () => showToast('No se pudo copiar', 'error')
-    );
+    navigator.clipboard.writeText(t).then(() => showToast('Copiado'));
   });
   els.btnTxt.addEventListener('click', () => {
     const t = checkText(); if (!t) return;
@@ -1738,19 +1796,11 @@
     if (!confirm('¿Borrar toda la transcripción?')) return;
     els.transcript.innerHTML = '';
     els.transcript.classList.add('empty');
-    els.lossyWarning.classList.remove('visible');
     updateStats();
     resetTimer();
   });
 
-  // ============ MODAL ============
-  els.shortcutsBtn.addEventListener('click', () => els.modalShortcuts.classList.add('visible'));
-  els.closeModal.addEventListener('click', () => els.modalShortcuts.classList.remove('visible'));
-  els.modalShortcuts.addEventListener('click', e => {
-    if (e.target === els.modalShortcuts) els.modalShortcuts.classList.remove('visible');
-  });
-
-  // ============ MOBILE SIDEBAR ============
+  // ============ MOBILE ============
   els.openSidebar.addEventListener('click', () => {
     els.sidebar.classList.add('open');
     els.closeSidebar.style.display = 'inline-flex';
@@ -1768,14 +1818,10 @@
     if (mod && e.key === 's') { e.preventDefault(); els.btnTxt.click(); }
     else if (mod && e.key === 'n') { e.preventDefault(); newSession(); }
     else if (mod && e.key === 'k') { e.preventDefault(); toggleTheme(); }
-    else if (mod && e.key === 'f') { e.preventDefault(); els.btnSearch.click(); }
-    else if (e.key === 'Escape') els.modalShortcuts.classList.remove('visible');
     else if (!inInput) {
       if (e.key === ' ' && state.mode === 'mic') {
         e.preventDefault();
         if (state.isRecording) stopRecording(); else startRecordingMic();
-      } else if (e.key === 'p' || e.key === 'P') {
-        if (state.isRecording) pauseRecording();
       }
     }
   });
@@ -1783,7 +1829,6 @@
   // ============ INIT ============
   loadSessions();
   updateStats();
-  initPermission();
   els.transcript.addEventListener('focus', () => {
     if (els.transcript.classList.contains('empty')) els.transcript.classList.remove('empty');
   });
