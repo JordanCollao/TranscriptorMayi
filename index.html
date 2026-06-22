@@ -905,10 +905,79 @@
   }
   .modal-btn-secondary:active { background: var(--bg-warm); }
 
+  /* ============ SPEAKER SWITCH PROMINENT ============ */
+  .speaker-switch-bar {
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-cream));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--shadow-soft);
+  }
+  .speaker-switch-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .speaker-switch-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .speaker-switch-current {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .speaker-switch-current .speaker-dot {
+    width: 12px;
+    height: 12px;
+  }
+  .btn-switch-speaker-prominent {
+    padding: 14px 18px;
+    border-radius: var(--radius);
+    background: var(--accent);
+    color: white;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all var(--transition);
+    box-shadow: 0 4px 12px rgba(201, 123, 74, 0.24);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .btn-switch-speaker-prominent:active {
+    transform: scale(0.96);
+    box-shadow: 0 2px 6px rgba(201, 123, 74, 0.24);
+  }
+  .btn-switch-speaker-prominent i { font-size: 16px; }
+
+  @media (max-width: 480px) {
+    .speaker-switch-bar {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+    }
+    .btn-switch-speaker-prominent {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
   /* ============ FINISHED STATE ============ */
   .finished-state .recording-controls,
-  .finished-state .speaker-controls,
-  .finished-state .speaker-mode-row,
+  .finished-state .speaker-switch-bar,
   .finished-state .filters-card,
   .finished-state .transcript-toolbar,
   .finished-state .export-clear {
@@ -927,27 +996,54 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
   }
   .finished-actions.hidden { display: none; }
 
   .btn-new-recording {
     width: 100%;
-    padding: 18px;
+    padding: 22px 24px;
     background: linear-gradient(135deg, var(--accent-soft), var(--accent));
     color: white;
-    border-radius: var(--radius);
-    font-size: 15px;
-    font-weight: 600;
+    border-radius: var(--radius-lg);
+    font-size: 17px;
+    font-weight: 700;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    box-shadow: 0 8px 24px rgba(201, 123, 74, 0.32);
+    gap: 10px;
+    box-shadow:
+      0 12px 32px rgba(201, 123, 74, 0.32),
+      0 4px 12px rgba(201, 123, 74, 0.20),
+      inset 0 -4px 8px rgba(168, 94, 48, 0.16),
+      inset 0 2px 4px rgba(255, 255, 255, 0.16);
     transition: all var(--transition);
+    letter-spacing: -0.01em;
+    position: relative;
+    overflow: hidden;
   }
-  .btn-new-recording:active { transform: scale(0.97); }
-  .btn-new-recording i { font-size: 20px; }
+  .btn-new-recording::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+    transition: transform 600ms var(--ease);
+    transform: translateX(-100%);
+  }
+  .btn-new-recording:hover::before { transform: translateX(100%); }
+  .btn-new-recording:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 16px 40px rgba(201, 123, 74, 0.40),
+      0 6px 16px rgba(201, 123, 74, 0.24),
+      inset 0 -4px 8px rgba(168, 94, 48, 0.16),
+      inset 0 2px 4px rgba(255, 255, 255, 0.16);
+  }
+  .btn-new-recording:active { transform: scale(0.98); }
+  .btn-new-recording i { font-size: 22px; }
 
   .finished-summary {
     background: var(--sage-bg);
@@ -993,54 +1089,6 @@
   .privacy-badge i { color: var(--sage); font-size: 14px; }
 
   /* ============ SPEAKER DIFFERENTIATION ============ */
-  .speaker-controls {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-    padding: 12px;
-    background: var(--bg-cream);
-    border-radius: var(--radius);
-    align-items: center;
-  }
-  .speaker-current {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13px;
-    color: var(--text-soft);
-  }
-  .speaker-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .speaker-dot.terapeuta { background: var(--accent); }
-  .speaker-dot.paciente { background: var(--sage); }
-  .speaker-label {
-    font-weight: 600;
-    color: var(--text);
-    font-size: 13px;
-  }
-  .btn-switch-speaker {
-    padding: 10px 14px;
-    border-radius: 12px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: all var(--transition);
-    box-shadow: var(--shadow-soft);
-    white-space: nowrap;
-  }
-  .btn-switch-speaker:active { transform: scale(0.96); }
-  .btn-switch-speaker i { font-size: 16px; }
-
   /* Marcadores en el transcript */
   .speaker-marker {
     display: block;
@@ -1056,37 +1104,14 @@
   .speaker-marker.paciente { color: var(--sage); }
   .speaker-marker i { font-size: 14px; vertical-align: middle; margin-right: 4px; }
 
-  /* Toggle Auto-detect */
-  .speaker-mode-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
+  .speaker-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
   }
-  .mode-chip {
-    flex: 1;
-    min-width: 120px;
-    padding: 8px 12px;
-    border-radius: 999px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    font-size: 12px;
-    color: var(--text-muted);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    cursor: pointer;
-    transition: all var(--transition);
-    font-weight: 500;
-  }
-  .mode-chip.active {
-    background: var(--accent-bg);
-    color: var(--accent-deep);
-    border-color: var(--accent-soft);
-    font-weight: 600;
-  }
-  .mode-chip i { font-size: 14px; }
+  .speaker-dot.terapeuta { background: var(--accent); }
+  .speaker-dot.paciente { background: var(--sage); }
 
   /* ============ AUDIO RECORDING INDICATOR ============ */
   .audio-record-badge {
@@ -1358,28 +1383,7 @@
       <input type="text" class="session-title-input" id="session-title" placeholder="Nombre de la sesión" maxlength="80">
       <div class="session-meta" id="session-meta">Empezada hace un momento</div>
 
-      <!-- Speaker controls -->
-      <div class="speaker-mode-row">
-        <div class="mode-chip active" id="chip-auto" data-mode="auto">
-          <i class="ti ti-bolt"></i>Detección automática
-        </div>
-        <div class="mode-chip" id="chip-manual" data-mode="manual">
-          <i class="ti ti-hand-click"></i>Solo manual
-        </div>
-        <div class="mode-chip" id="chip-off" data-mode="off">
-          <i class="ti ti-x"></i>Sin diferenciar
-        </div>
-      </div>
-
-      <div class="speaker-controls" id="speaker-controls">
-        <div class="speaker-current">
-          <div class="speaker-dot terapeuta" id="current-speaker-dot"></div>
-          <div>Hablando ahora: <span class="speaker-label" id="current-speaker-label">Terapeuta</span></div>
-        </div>
-        <button class="btn-switch-speaker" id="btn-switch-speaker">
-          <i class="ti ti-switch"></i>Cambiar
-        </button>
-      </div>
+      <!-- Speaker controls (moved cerca del transcript) -->
 
       <!-- Audio filters panel -->
       <details class="filters-card" id="filters-card">
@@ -1442,6 +1446,13 @@
         </div>
       </div>
 
+      <!-- Botón nueva sesión PROMINENTE (visible en finished state) -->
+      <div class="finished-actions hidden" id="finished-actions">
+        <button class="btn-new-recording" id="btn-new-recording">
+          <i class="ti ti-microphone"></i>Iniciar nueva sesión
+        </button>
+      </div>
+
       <!-- Audio download card -->
       <div class="audio-download-card" id="audio-download-card">
         <div class="audio-download-icon"><i class="ti ti-file-music"></i></div>
@@ -1463,6 +1474,21 @@
               <i class="ti ti-check" style="color: var(--sage); font-size: 12px;"></i>Guardado
             </span>
           </div>
+        </div>
+
+        <!-- Speaker switch prominente -->
+        <div class="speaker-switch-bar" id="speaker-controls">
+          <div class="speaker-switch-info">
+            <div class="speaker-switch-label">Hablando ahora</div>
+            <div class="speaker-switch-current">
+              <div class="speaker-dot terapeuta" id="current-speaker-dot"></div>
+              <span class="speaker-label" id="current-speaker-label">Terapeuta</span>
+            </div>
+          </div>
+          <button class="btn-switch-speaker-prominent" id="btn-switch-speaker">
+            <i class="ti ti-switch-horizontal"></i>
+            <span id="switch-to-label">Cambiar a Paciente</span>
+          </button>
         </div>
 
         <div class="transcript-card">
@@ -1500,13 +1526,6 @@
             <button class="export-btn" id="btn-pdf"><i class="ti ti-file-type-pdf"></i>PDF</button>
           </div>
 
-          <!-- Botón nueva sesión (solo visible en finished state) -->
-          <div class="finished-actions hidden" id="finished-actions">
-            <button class="btn-new-recording" id="btn-new-recording">
-              <i class="ti ti-microphone"></i>Iniciar nueva sesión
-            </button>
-          </div>
-
           <button class="export-clear" id="btn-clear">
             <i class="ti ti-trash"></i>Limpiar transcripción
           </button>
@@ -1522,7 +1541,7 @@
     <div class="modal-handle"></div>
     <div class="modal-icon"><i class="ti ti-shield-check"></i></div>
     <h2>Antes de empezar</h2>
-    <p>Estás a punto de registrar una sesión clínica. Por favor, asegúrate de cumplir con lo siguiente:</p>
+    <p>Estás a punto de registrar una sesión clínica. Asegúrate de que el paciente esté informado y haya dado su consentimiento. La grabación se queda en tu dispositivo.</p>
 
     <div class="checklist">
       <div class="checklist-item">
@@ -1535,25 +1554,18 @@
       </div>
       <div class="checklist-item">
         <i class="ti ti-check"></i>
-        <span>Conoces tu obligación deontológica sobre custodia de la grabación.</span>
-      </div>
-      <div class="checklist-item">
-        <i class="ti ti-check"></i>
         <span>El registro se usará solo con fines profesionales lícitos.</span>
       </div>
     </div>
 
-    <label class="modal-checkbox">
-      <input type="checkbox" id="consent-checkbox">
-      <span>Confirmo que cumplo con todos los puntos y soy responsable del uso ético de esta herramienta.</span>
+    <label for="consent-session-name" style="display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 8px;">
+      Nombre de la sesión
     </label>
-    <label class="modal-checkbox">
-      <input type="checkbox" id="consent-dont-show">
-      <span>No mostrar este aviso de nuevo en este dispositivo.</span>
-    </label>
+    <input type="text" id="consent-session-name" placeholder="Ej: Sesión 12 · Paciente J." maxlength="80"
+           style="width: 100%; padding: 14px 16px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--bg-cream); color: var(--text); font-size: 14px; font-family: inherit; margin-bottom: 16px; -webkit-appearance: none;">
 
     <div class="modal-buttons">
-      <button class="modal-btn-primary" id="consent-accept" disabled>
+      <button class="modal-btn-primary" id="consent-accept">
         Aceptar y empezar
       </button>
       <button class="modal-btn-secondary" id="consent-cancel">Cancelar</button>
@@ -1586,8 +1598,6 @@
   const STORAGE_KEY = 'sesiones_v3';
   const THEME_KEY = 'sesiones_theme';
   const FONTSIZE_KEY = 'sesiones_fontsize';
-  const CONSENT_KEY = 'sesiones_consent_skip';
-  const SPEAKER_MODE_KEY = 'sesiones_speaker_mode';
   const FILTERS_KEY = 'sesiones_filters';
 
   const state = {
@@ -1607,11 +1617,8 @@
     sessions: [],
     fontSize: parseInt(localStorage.getItem(FONTSIZE_KEY) || '16'),
     autosaveTimeout: null,
-    // Speaker differentiation
-    speakerMode: localStorage.getItem(SPEAKER_MODE_KEY) || 'auto',
+    // Speaker (siempre manual)
     currentSpeaker: 'terapeuta',
-    lastSpeechTime: 0,
-    silenceThreshold: 1500,
     // Audio recording
     mediaRecorder: null,
     audioChunks: [],
@@ -1637,11 +1644,11 @@
    'finished-summary','finished-summary-title','finished-summary-desc','finished-actions',
    'btn-add-paragraph','btn-timestamp','btn-search','btn-undo',
    'btn-fontsize-up','btn-fontsize-down',
-   'consent-modal','consent-checkbox','consent-dont-show','consent-accept','consent-cancel',
+   'consent-modal','consent-session-name','consent-accept','consent-cancel',
    'toast','toast-text','toast-icon',
    // Speaker
-   'speaker-controls','chip-auto','chip-manual','chip-off',
-   'current-speaker-dot','current-speaker-label','btn-switch-speaker',
+   'speaker-controls','current-speaker-dot','current-speaker-label',
+   'btn-switch-speaker','switch-to-label',
    // Filters
    'filters-card','f-noise','f-voice','f-compress','f-record-audio',
    // Audio
@@ -1827,47 +1834,26 @@
     });
   });
 
-  // ============ SPEAKER MODE ============
-  function updateSpeakerModeUI() {
-    [els.chipAuto, els.chipManual, els.chipOff].forEach(c => c.classList.remove('active'));
-    if (state.speakerMode === 'auto') els.chipAuto.classList.add('active');
-    else if (state.speakerMode === 'manual') els.chipManual.classList.add('active');
-    else els.chipOff.classList.add('active');
-
-    // Mostrar/ocultar controles según modo
-    els.speakerControls.style.display = state.speakerMode === 'off' ? 'none' : 'flex';
-  }
-  updateSpeakerModeUI();
-
-  [els.chipAuto, els.chipManual, els.chipOff].forEach(chip => {
-    chip.addEventListener('click', () => {
-      state.speakerMode = chip.dataset.mode;
-      localStorage.setItem(SPEAKER_MODE_KEY, state.speakerMode);
-      updateSpeakerModeUI();
-      haptic();
-    });
-  });
-
+  // ============ SPEAKER (siempre manual) ============
   function updateSpeakerUI() {
     const isTerapeuta = state.currentSpeaker === 'terapeuta';
     els.currentSpeakerDot.className = 'speaker-dot ' + state.currentSpeaker;
     els.currentSpeakerLabel.textContent = isTerapeuta ? 'Terapeuta' : 'Paciente';
+    els.switchToLabel.textContent = isTerapeuta ? 'Cambiar a Paciente' : 'Cambiar a Terapeuta';
   }
 
-  function switchSpeaker(silent) {
+  function switchSpeaker() {
     state.currentSpeaker = state.currentSpeaker === 'terapeuta' ? 'paciente' : 'terapeuta';
     updateSpeakerUI();
     insertSpeakerMarker();
-    if (!silent) haptic(15);
+    haptic(15);
   }
 
   function insertSpeakerMarker() {
-    if (state.speakerMode === 'off') return;
     if (els.transcript.classList.contains('empty')) {
       els.transcript.classList.remove('empty');
       els.transcript.innerHTML = '';
     }
-    // Quitar interim si existe
     if (interimSpan && interimSpan.parentNode) interimSpan.remove();
     interimSpan = null;
 
@@ -1877,7 +1863,6 @@
     marker.innerHTML = `<i class="ti ti-${state.currentSpeaker === 'terapeuta' ? 'user-circle' : 'user'}"></i>${state.currentSpeaker === 'terapeuta' ? 'Terapeuta' : 'Paciente'}`;
     els.transcript.appendChild(marker);
 
-    // Crear nuevo párrafo después del marker
     const p = document.createElement('p');
     p.innerHTML = '<br>';
     els.transcript.appendChild(p);
@@ -1885,6 +1870,7 @@
   }
 
   els.btnSwitchSpeaker.addEventListener('click', () => switchSpeaker());
+  updateSpeakerUI();
 
   // ============ VISUALIZER + FILTERS + AUDIO RECORDING ============
   function setupVisualizer(stream) {
@@ -1964,19 +1950,6 @@
     function draw() {
       if (!state.isRecording || state.isPaused) return;
       state.analyser.getByteFrequencyData(data);
-      const avg = data.reduce((a,b) => a+b, 0) / data.length;
-
-      // Detección de silencio para cambio de hablante
-      if (avg > 12) {
-        state.lastSpeechTime = Date.now();
-      } else if (state.speakerMode === 'auto' && state.lastSpeechTime > 0) {
-        const silenceMs = Date.now() - state.lastSpeechTime;
-        if (silenceMs > state.silenceThreshold) {
-          // Silencio prolongado: cambio de hablante automático
-          state.lastSpeechTime = 0;
-          switchSpeaker(true);
-        }
-      }
 
       for (let i = 0; i < bars; i++) {
         const v = data[Math.floor(i * data.length / bars)] / 255;
@@ -2251,10 +2224,8 @@
     if (els.transcript.classList.contains('empty')) {
       els.transcript.classList.remove('empty');
       els.transcript.innerHTML = '';
-      // Si hay diferenciación de hablantes activa, insertar marker inicial
-      if (state.speakerMode !== 'off') {
-        insertSpeakerMarker();
-      }
+      // Insertar marker inicial siempre
+      insertSpeakerMarker();
     }
     if (interimSpan && interimSpan.parentNode) interimSpan.remove();
     interimSpan = null;
@@ -2266,11 +2237,7 @@
     }
 
     let lastP = els.transcript.querySelector('p:last-child');
-    if (!lastP || lastP.previousElementSibling?.classList?.contains('speaker-marker') === false && state.speakerMode !== 'off' && !els.transcript.querySelector('.speaker-marker')) {
-      // Asegurar que hay un párrafo para escribir
-      lastP = document.createElement('p');
-      els.transcript.appendChild(lastP);
-    } else if (!lastP) {
+    if (!lastP) {
       lastP = document.createElement('p');
       els.transcript.appendChild(lastP);
     }
@@ -2301,23 +2268,38 @@
 
   // ============ CONSENT ============
   function showConsent(onAccept) {
-    if (localStorage.getItem(CONSENT_KEY) === '1') { onAccept(); return; }
+    // Pre-llenar nombre de sesión con sugerencia por defecto
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('es-PE', { day: '2-digit', month: 'long' });
+    const timeStr = now.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
+    els.consentSessionName.value = `Sesión ${dateStr}, ${timeStr}`;
+
     els.consentModal.classList.add('visible');
-    els.consentCheckbox.checked = false;
-    els.consentDontShow.checked = false;
-    els.consentAccept.disabled = true;
     state._consentCallback = onAccept;
+
+    // Focus en input después de animación
+    setTimeout(() => {
+      els.consentSessionName.focus();
+      els.consentSessionName.select();
+    }, 400);
   }
-  els.consentCheckbox.addEventListener('change', () => {
-    els.consentAccept.disabled = !els.consentCheckbox.checked;
-  });
   els.consentAccept.addEventListener('click', () => {
-    if (els.consentDontShow.checked) localStorage.setItem(CONSENT_KEY, '1');
+    const name = els.consentSessionName.value.trim();
+    if (name) {
+      els.sessionTitle.value = name;
+    }
     els.consentModal.classList.remove('visible');
     if (state._consentCallback) state._consentCallback();
   });
   els.consentCancel.addEventListener('click', () => {
     els.consentModal.classList.remove('visible');
+  });
+  // Permitir Enter para aceptar
+  els.consentSessionName.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      els.consentAccept.click();
+    }
   });
 
   // ============ TRANSITIONS HOME <-> RECORDING ============
@@ -2341,7 +2323,6 @@
       els.audioDownloadCard.classList.remove('visible');
       // Reset speaker
       state.currentSpeaker = 'terapeuta';
-      state.lastSpeechTime = 0;
       updateSpeakerUI();
 
       try {
@@ -2364,13 +2345,6 @@
 
       state.isRecording = true;
       state.isPaused = false;
-
-      if (!els.sessionTitle.value.trim()) {
-        const now = new Date();
-        const dateStr = now.toLocaleDateString('es-PE', { day: '2-digit', month: 'long' });
-        const timeStr = now.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
-        els.sessionTitle.value = `Sesión ${dateStr}, ${timeStr}`;
-      }
 
       els.recordingStatus.textContent = 'Grabando';
       els.btnPause.innerHTML = '<i class="ti ti-player-pause"></i>Pausar';
