@@ -732,159 +732,6 @@
   }
   .footer-btn:active { background: var(--bg-warm); }
 
-  /* ============ FOCUS MODE ============ */
-  .focus-mode {
-    position: fixed;
-    inset: 0;
-    background: var(--bg);
-    z-index: 200;
-    display: none;
-    flex-direction: column;
-    padding: var(--safe-top) 24px var(--safe-bottom);
-  }
-  .focus-mode.active { display: flex; }
-
-  .focus-mode::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 80% 60% at 50% 0%, var(--accent-bg) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 80% at 50% 100%, var(--rose-bg) 0%, transparent 50%);
-    opacity: 0.5;
-    z-index: -1;
-    pointer-events: none;
-  }
-
-  .focus-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 24px 0 0;
-  }
-  .focus-title {
-    font-size: 14px;
-    color: var(--text-muted);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    flex: 1;
-    margin-right: 12px;
-    font-weight: 500;
-  }
-  .focus-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 0 20px;
-    text-align: center;
-  }
-  .focus-pulse-ring {
-    position: relative;
-    width: 200px;
-    height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 40px;
-  }
-  .focus-pulse-ring::before,
-  .focus-pulse-ring::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    border: 2px solid var(--accent);
-    opacity: 0;
-    animation: focusRipple 3s ease-out infinite;
-  }
-  .focus-pulse-ring::after { animation-delay: 1.5s; }
-  @keyframes focusRipple {
-    0% { transform: scale(0.6); opacity: 0.6; }
-    100% { transform: scale(1.4); opacity: 0; }
-  }
-  .focus-circle {
-    width: 140px;
-    height: 140px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent-soft), var(--accent));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    box-shadow:
-      0 12px 32px rgba(201, 123, 74, 0.32),
-      inset 0 -8px 16px rgba(168, 94, 48, 0.2),
-      inset 0 4px 8px rgba(255, 255, 255, 0.2);
-    font-size: 48px;
-  }
-  .focus-label {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 12px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-  .focus-timer {
-    font-size: 64px;
-    font-weight: 300;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.04em;
-    color: var(--text);
-    margin-bottom: 8px;
-    line-height: 1;
-  }
-  .focus-sub {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 48px;
-    font-weight: 400;
-  }
-  .focus-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    width: 100%;
-    max-width: 320px;
-    margin: 0 auto;
-  }
-  .focus-btn-stop {
-    width: 100%;
-    padding: 18px;
-    background: linear-gradient(135deg, var(--rose), var(--danger));
-    color: white;
-    border-radius: var(--radius);
-    font-size: 15px;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    box-shadow: 0 8px 24px rgba(196, 82, 74, 0.32);
-    transition: all var(--transition);
-  }
-  .focus-btn-stop:active { transform: scale(0.97); }
-  .focus-btn-secondary {
-    width: 100%;
-    padding: 14px;
-    background: var(--bg-card);
-    color: var(--text);
-    border-radius: var(--radius);
-    font-size: 14px;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    border: 1px solid var(--border);
-    transition: all var(--transition);
-    box-shadow: var(--shadow-soft);
-  }
-  .focus-btn-secondary:active { transform: scale(0.97); }
-
   /* ============ TOAST ============ */
   .toast {
     position: fixed;
@@ -1058,69 +905,75 @@
   }
   .modal-btn-secondary:active { background: var(--bg-warm); }
 
-  /* ============ FOCUS TOGGLE ============ */
-  .focus-toggle-card {
+  /* ============ FINISHED STATE ============ */
+  .finished-state .recording-controls,
+  .finished-state .speaker-controls,
+  .finished-state .speaker-mode-row,
+  .finished-state .filters-card,
+  .finished-state .transcript-toolbar,
+  .finished-state .export-clear {
+    display: none !important;
+  }
+  .finished-state .recording-dot {
+    background: var(--sage);
+    animation: none;
+  }
+  .finished-state .transcript {
+    cursor: default;
+    background: var(--bg-cream);
+  }
+
+  .finished-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .finished-actions.hidden { display: none; }
+
+  .btn-new-recording {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, var(--accent-soft), var(--accent));
+    color: white;
+    border-radius: var(--radius);
+    font-size: 15px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 8px 24px rgba(201, 123, 74, 0.32);
+    transition: all var(--transition);
+  }
+  .btn-new-recording:active { transform: scale(0.97); }
+  .btn-new-recording i { font-size: 20px; }
+
+  .finished-summary {
     background: var(--sage-bg);
     border-radius: var(--radius);
     padding: 16px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     display: flex;
     align-items: center;
-    gap: 14px;
-    border: 1px solid rgba(122, 155, 124, 0.16);
+    gap: 12px;
+    border: 1px solid rgba(122, 155, 124, 0.2);
   }
-  .focus-toggle-icon {
-    width: 40px;
-    height: 40px;
-    background: white;
+  .finished-summary-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--sage);
+    color: white;
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--sage);
-    font-size: 18px;
+    font-size: 22px;
     flex-shrink: 0;
   }
-  [data-theme="dark"] .focus-toggle-icon,
-  @media (prefers-color-scheme: dark) {
-    .focus-toggle-icon { background: var(--bg-card); }
-  }
-  .focus-toggle-info { flex: 1; min-width: 0; }
-  .focus-toggle-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 2px;
-  }
-  .focus-toggle-desc {
-    font-size: 12px;
-    color: var(--text-soft);
-    line-height: 1.4;
-  }
-  .switch {
-    position: relative;
-    width: 48px;
-    height: 28px;
-    background: var(--border-strong);
-    border-radius: 999px;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: background 300ms var(--ease);
-  }
-  .switch.on { background: var(--sage); }
-  .switch::after {
-    content: '';
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 24px;
-    height: 24px;
-    background: white;
-    border-radius: 50%;
-    transition: transform 300ms var(--ease);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.16);
-  }
-  .switch.on::after { transform: translateX(20px); }
+  .finished-summary-info { flex: 1; min-width: 0; }
+  .finished-summary-title { font-size: 14px; font-weight: 600; color: var(--text); }
+  .finished-summary-desc { font-size: 12px; color: var(--text-soft); margin-top: 2px; }
 
   /* ============ PRIVACY BADGE ============ */
   .privacy-badge {
@@ -1505,15 +1358,6 @@
       <input type="text" class="session-title-input" id="session-title" placeholder="Nombre de la sesión" maxlength="80">
       <div class="session-meta" id="session-meta">Empezada hace un momento</div>
 
-      <div class="focus-toggle-card">
-        <div class="focus-toggle-icon"><i class="ti ti-eye-off"></i></div>
-        <div class="focus-toggle-info">
-          <div class="focus-toggle-title">Modo sesión clínica</div>
-          <div class="focus-toggle-desc">Oculta la transcripción durante la grabación</div>
-        </div>
-        <div class="switch" id="switch-focus"></div>
-      </div>
-
       <!-- Speaker controls -->
       <div class="speaker-mode-row">
         <div class="mode-chip active" id="chip-auto" data-mode="auto">
@@ -1589,6 +1433,15 @@
         </button>
       </div>
 
+      <!-- Summary finalizada -->
+      <div class="finished-summary" id="finished-summary" style="display: none;">
+        <div class="finished-summary-icon"><i class="ti ti-check"></i></div>
+        <div class="finished-summary-info">
+          <div class="finished-summary-title" id="finished-summary-title">Sesión completada</div>
+          <div class="finished-summary-desc" id="finished-summary-desc">Duración · palabras transcritas</div>
+        </div>
+      </div>
+
       <!-- Audio download card -->
       <div class="audio-download-card" id="audio-download-card">
         <div class="audio-download-icon"><i class="ti ti-file-music"></i></div>
@@ -1646,6 +1499,14 @@
             <button class="export-btn" id="btn-doc"><i class="ti ti-file-type-doc"></i>Word</button>
             <button class="export-btn" id="btn-pdf"><i class="ti ti-file-type-pdf"></i>PDF</button>
           </div>
+
+          <!-- Botón nueva sesión (solo visible en finished state) -->
+          <div class="finished-actions hidden" id="finished-actions">
+            <button class="btn-new-recording" id="btn-new-recording">
+              <i class="ti ti-microphone"></i>Iniciar nueva sesión
+            </button>
+          </div>
+
           <button class="export-clear" id="btn-clear">
             <i class="ti ti-trash"></i>Limpiar transcripción
           </button>
@@ -1653,34 +1514,6 @@
       </div>
     </div>
   </main>
-</div>
-
-<!-- ============ FOCUS MODE ============ -->
-<div class="focus-mode" id="focus-mode">
-  <div class="focus-header">
-    <div class="focus-title" id="focus-title">Sesión</div>
-    <button class="icon-btn" id="focus-exit" aria-label="Salir">
-      <i class="ti ti-x"></i>
-    </button>
-  </div>
-  <div class="focus-content">
-    <div class="focus-pulse-ring">
-      <div class="focus-circle">
-        <i class="ti ti-microphone"></i>
-      </div>
-    </div>
-    <div class="focus-label">Grabando sesión</div>
-    <div class="focus-timer" id="focus-timer">00:00</div>
-    <div class="focus-sub">La transcripción se procesa en segundo plano</div>
-    <div class="focus-controls">
-      <button class="focus-btn-stop" id="focus-stop">
-        <i class="ti ti-player-stop"></i>Finalizar sesión
-      </button>
-      <button class="focus-btn-secondary" id="focus-pause">
-        <i class="ti ti-player-pause"></i>Pausar
-      </button>
-    </div>
-  </div>
 </div>
 
 <!-- ============ CONSENT MODAL ============ -->
@@ -1753,7 +1586,6 @@
   const STORAGE_KEY = 'sesiones_v3';
   const THEME_KEY = 'sesiones_theme';
   const FONTSIZE_KEY = 'sesiones_fontsize';
-  const FOCUS_KEY = 'sesiones_focus_mode';
   const CONSENT_KEY = 'sesiones_consent_skip';
   const SPEAKER_MODE_KEY = 'sesiones_speaker_mode';
   const FILTERS_KEY = 'sesiones_filters';
@@ -1761,6 +1593,7 @@
   const state = {
     isRecording: false,
     isPaused: false,
+    sessionEnded: false,
     recognition: null,
     audioCtx: null,
     analyser: null,
@@ -1774,12 +1607,11 @@
     sessions: [],
     fontSize: parseInt(localStorage.getItem(FONTSIZE_KEY) || '16'),
     autosaveTimeout: null,
-    focusMode: localStorage.getItem(FOCUS_KEY) === '1',
     // Speaker differentiation
-    speakerMode: localStorage.getItem(SPEAKER_MODE_KEY) || 'auto', // auto | manual | off
-    currentSpeaker: 'terapeuta', // terapeuta | paciente
+    speakerMode: localStorage.getItem(SPEAKER_MODE_KEY) || 'auto',
+    currentSpeaker: 'terapeuta',
     lastSpeechTime: 0,
-    silenceThreshold: 1500, // ms para auto-cambio
+    silenceThreshold: 1500,
     // Audio recording
     mediaRecorder: null,
     audioChunks: [],
@@ -1801,17 +1633,18 @@
    'home-greeting','recording-status','stat-words','autosave-indicator',
    'drawer','drawer-overlay','open-drawer','close-drawer',
    'history-list','btn-new-session','theme-toggle','theme-icon','theme-label',
-   'btn-copy','btn-txt','btn-doc','btn-pdf','btn-clear',
+   'btn-copy','btn-txt','btn-doc','btn-pdf','btn-clear','btn-new-recording',
+   'finished-summary','finished-summary-title','finished-summary-desc','finished-actions',
    'btn-add-paragraph','btn-timestamp','btn-search','btn-undo',
    'btn-fontsize-up','btn-fontsize-down',
-   'switch-focus','focus-mode','focus-title','focus-timer',
-   'focus-stop','focus-pause','focus-exit',
    'consent-modal','consent-checkbox','consent-dont-show','consent-accept','consent-cancel',
    'toast','toast-text','toast-icon',
-   // Nuevos
+   // Speaker
    'speaker-controls','chip-auto','chip-manual','chip-off',
    'current-speaker-dot','current-speaker-label','btn-switch-speaker',
+   // Filters
    'filters-card','f-noise','f-voice','f-compress','f-record-audio',
+   // Audio
    'audio-download-card','audio-download-desc','btn-download-audio',
    'mp3-modal','mp3-modal-title','mp3-modal-progress','mp3-modal-fill'
   ].forEach(id => {
@@ -1837,6 +1670,80 @@
   }
 
   function getText() { return els.transcript.innerText.trim(); }
+
+  // Función robusta para obtener texto plano respetando marcadores de hablante
+  function getPlainText() {
+    const transcript = els.transcript;
+    let result = '';
+
+    // Iterar por los nodos hijos preservando estructura
+    transcript.childNodes.forEach(node => {
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        if (node.classList && node.classList.contains('speaker-marker')) {
+          // Marcador de hablante
+          const isTerapeuta = node.classList.contains('terapeuta');
+          const label = isTerapeuta ? 'TERAPEUTA' : 'PACIENTE';
+          if (result.length > 0 && !result.endsWith('\n\n')) result += '\n\n';
+          result += label + ':\n';
+        } else if (node.tagName === 'P') {
+          // Párrafo
+          const text = node.innerText.trim();
+          if (text) {
+            if (result.length > 0 && !result.endsWith('\n')) result += ' ';
+            result += text;
+          }
+        } else if (node.tagName === 'BR') {
+          result += '\n';
+        } else {
+          // Otro elemento
+          const text = node.innerText || node.textContent;
+          if (text && text.trim()) result += text.trim();
+        }
+      } else if (node.nodeType === Node.TEXT_NODE) {
+        const text = node.textContent.trim();
+        if (text) {
+          if (result.length > 0 && !result.endsWith('\n') && !result.endsWith(' ')) result += ' ';
+          result += text;
+        }
+      }
+    });
+
+    return result.trim();
+  }
+
+  // Función robusta para copiar al portapapeles con fallback
+  async function copyToClipboard(text) {
+    // Método 1: Clipboard API (requiere HTTPS o localhost)
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch(e) {
+        console.warn('Clipboard API failed:', e);
+      }
+    }
+    // Método 2: Fallback con textarea + execCommand (funciona en file://)
+    try {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.top = '0';
+      textarea.style.left = '0';
+      textarea.style.width = '1px';
+      textarea.style.height = '1px';
+      textarea.style.opacity = '0';
+      textarea.setAttribute('readonly', '');
+      document.body.appendChild(textarea);
+      textarea.select();
+      textarea.setSelectionRange(0, text.length);
+      const success = document.execCommand('copy');
+      document.body.removeChild(textarea);
+      return success;
+    } catch(e) {
+      console.error('Fallback copy failed:', e);
+      return false;
+    }
+  }
 
   function haptic(duration = 10) {
     if (navigator.vibrate) navigator.vibrate(duration);
@@ -1891,21 +1798,6 @@
   els.openDrawer.addEventListener('click', openDrawer);
   els.closeDrawer.addEventListener('click', closeDrawer);
   els.drawerOverlay.addEventListener('click', closeDrawer);
-
-  // ============ FOCUS MODE SWITCH ============
-  function updateFocusSwitch() {
-    els.switchFocus.classList.toggle('on', state.focusMode);
-  }
-  updateFocusSwitch();
-  els.switchFocus.addEventListener('click', () => {
-    state.focusMode = !state.focusMode;
-    localStorage.setItem(FOCUS_KEY, state.focusMode ? '1' : '0');
-    updateFocusSwitch();
-    haptic();
-    if (state.focusMode && state.isRecording) {
-      setTimeout(() => enterFocusMode(), 200);
-    }
-  });
 
   // ============ COMPATIBILITY ============
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -2278,9 +2170,7 @@
     if (state.timerInterval) clearInterval(state.timerInterval);
     state.timerInterval = setInterval(() => {
       const e = state.elapsedBefore + (Date.now() - state.startTime);
-      const formatted = formatTime(e);
-      els.timerDisplay.textContent = formatted;
-      els.focusTimer.textContent = formatted;
+      els.timerDisplay.textContent = formatTime(e);
       updateSessionMetaLive();
     }, 500);
   }
@@ -2293,7 +2183,6 @@
     state.elapsedBefore = 0;
     state.startTime = 0;
     els.timerDisplay.textContent = '00:00';
-    els.focusTimer.textContent = '00:00';
   }
 
   function updateSessionMetaLive() {
@@ -2431,25 +2320,6 @@
     els.consentModal.classList.remove('visible');
   });
 
-  // ============ FOCUS MODE UI ============
-  function enterFocusMode() {
-    els.focusTitle.textContent = els.sessionTitle.value || 'Sesión sin título';
-    els.focusMode.classList.add('active');
-  }
-  function exitFocusMode() {
-    els.focusMode.classList.remove('active');
-  }
-  els.focusExit.addEventListener('click', exitFocusMode);
-  els.focusStop.addEventListener('click', () => {
-    stopRecording();
-    exitFocusMode();
-    haptic(20);
-  });
-  els.focusPause.addEventListener('click', () => {
-    pauseRecording();
-    haptic();
-  });
-
   // ============ TRANSITIONS HOME <-> RECORDING ============
   function showRecordingScreen() {
     els.home.classList.add('hidden');
@@ -2463,6 +2333,8 @@
   // ============ START / STOP ============
   async function startRecording() {
     showConsent(async () => {
+      // Salir de estado finalizado si está activo
+      exitFinishedState();
       // Reset previous audio
       state.audioBlob = null;
       state.audioChunks = [];
@@ -2507,10 +2379,6 @@
 
       showRecordingScreen();
 
-      if (state.focusMode) {
-        setTimeout(() => enterFocusMode(), 400);
-      }
-
       requestWakeLock();
     });
   }
@@ -2523,7 +2391,6 @@
       pauseAudioRecording();
       pauseTimer();
       els.btnPause.innerHTML = '<i class="ti ti-player-play"></i>Reanudar';
-      els.focusPause.innerHTML = '<i class="ti ti-player-play"></i>Reanudar';
       els.recordingStatus.textContent = 'En pausa';
     } else {
       state.isPaused = false;
@@ -2532,9 +2399,37 @@
       resumeAudioRecording();
       startTimer();
       els.btnPause.innerHTML = '<i class="ti ti-player-pause"></i>Pausar';
-      els.focusPause.innerHTML = '<i class="ti ti-player-pause"></i>Pausar';
       els.recordingStatus.textContent = 'Grabando';
     }
+  }
+
+  function enterFinishedState() {
+    state.sessionEnded = true;
+    els.recordingScreen.classList.add('finished-state');
+    els.recordingStatus.textContent = 'Sesión completada';
+    els.finishedActions.classList.remove('hidden');
+
+    // Update summary
+    const duration = formatTime(state.elapsedBefore);
+    const text = getPlainText();
+    const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
+    const hasAudio = !!state.audioBlob;
+    els.finishedSummaryTitle.textContent = 'Sesión completada';
+    let desc = `${duration} · ${words.toLocaleString()} palabras`;
+    if (hasAudio) desc += ' · Audio disponible';
+    els.finishedSummaryDesc.textContent = desc;
+    els.finishedSummary.style.display = 'flex';
+
+    // Hacer transcript no editable
+    els.transcript.contentEditable = 'false';
+  }
+
+  function exitFinishedState() {
+    state.sessionEnded = false;
+    els.recordingScreen.classList.remove('finished-state');
+    els.finishedActions.classList.add('hidden');
+    els.finishedSummary.style.display = 'none';
+    els.transcript.contentEditable = 'true';
   }
 
   function stopRecording() {
@@ -2557,7 +2452,7 @@
         els.sessionTitle.value = '';
       }, 300);
     } else {
-      els.recordingStatus.textContent = 'Finalizada';
+      enterFinishedState();
       showToast('Sesión finalizada');
     }
   }
@@ -2650,6 +2545,7 @@
     const s = state.sessions.find(x => x.id === id);
     if (!s) return;
     if (state.isRecording) stopRecording();
+    exitFinishedState();
     state.currentSessionId = id;
     els.sessionTitle.value = s.title;
     els.transcript.innerHTML = s.html;
@@ -2660,6 +2556,12 @@
     renderHistory();
     showRecordingScreen();
     els.recordingStatus.textContent = 'Sesión guardada';
+    // Para sesiones guardadas: mostrar vista finalizada
+    enterFinishedState();
+    els.finishedSummaryTitle.textContent = 'Sesión guardada';
+    const text = getPlainText();
+    const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
+    els.finishedSummaryDesc.textContent = `${words.toLocaleString()} palabras · ${d.toLocaleDateString('es-PE')}`;
     closeDrawer();
   }
 
@@ -2674,7 +2576,11 @@
 
   function newSession() {
     if (state.isRecording) stopRecording();
+    exitFinishedState();
     state.currentSessionId = null;
+    state.audioBlob = null;
+    state.audioChunks = [];
+    els.audioDownloadCard.classList.remove('visible');
     els.sessionTitle.value = '';
     els.transcript.innerHTML = '';
     els.transcript.classList.add('empty');
@@ -2709,16 +2615,38 @@
           <div class="history-item-title">${safe}</div>
           <div class="history-item-date">${isToday ? 'Hoy · ' : ''}${dateStr}</div>
         </div>
-        <span class="history-item-delete" data-del="${s.id}"><i class="ti ti-trash"></i></span>
+        <span class="history-item-delete" data-rename="${s.id}" title="Renombrar"><i class="ti ti-edit"></i></span>
+        <span class="history-item-delete" data-del="${s.id}" title="Eliminar"><i class="ti ti-trash"></i></span>
       </button>`;
     }).join('');
     els.historyList.querySelectorAll('.history-item').forEach(el => {
       el.addEventListener('click', e => {
+        const renameBtn = e.target.closest('[data-rename]');
+        if (renameBtn) { renameSession(renameBtn.dataset.rename, e); return; }
         const del = e.target.closest('[data-del]');
         if (del) { deleteSession(del.dataset.del, e); return; }
         loadSession(el.dataset.id);
       });
     });
+  }
+
+  function renameSession(id, e) {
+    e.stopPropagation();
+    const s = state.sessions.find(x => x.id === id);
+    if (!s) return;
+    const newTitle = prompt('Nuevo nombre para la sesión:', s.title);
+    if (newTitle === null) return; // canceló
+    const trimmed = newTitle.trim();
+    if (!trimmed) { showToast('El nombre no puede estar vacío', 'error'); return; }
+    s.title = trimmed.slice(0, 80);
+    s.updated = Date.now();
+    saveSessions();
+    renderHistory();
+    if (state.currentSessionId === id) {
+      els.sessionTitle.value = s.title;
+    }
+    showToast('Sesión renombrada');
+    haptic();
   }
   els.btnNewSession.addEventListener('click', newSession);
   els.sessionTitle.addEventListener('input', scheduleAutosave);
@@ -2739,14 +2667,20 @@
     return (t || 'sesion') + '.' + ext;
   }
   function checkText() {
-    const t = getText();
+    const t = getPlainText();
     if (!t) { showToast('No hay texto para exportar', 'error'); return null; }
     return t;
   }
 
-  els.btnCopy.addEventListener('click', () => {
+  els.btnCopy.addEventListener('click', async () => {
     const t = checkText(); if (!t) return;
-    navigator.clipboard.writeText(t).then(() => { showToast('Copiado al portapapeles'); haptic(); });
+    const success = await copyToClipboard(t);
+    if (success) {
+      showToast('Copiado al portapapeles');
+      haptic();
+    } else {
+      showToast('No se pudo copiar. Selecciona el texto manualmente.', 'error');
+    }
   });
   els.btnTxt.addEventListener('click', () => {
     const t = checkText(); if (!t) return;
@@ -2758,12 +2692,22 @@
     const t = checkText(); if (!t) return;
     const title = (els.sessionTitle.value || 'Sesión').replace(/&/g,'&amp;').replace(/</g,'&lt;');
     const date = new Date().toLocaleString('es-PE');
-    const ps = t.split(/\n\n+/).map(p =>
-      `<p style="margin:0 0 12pt;">${p.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>')}</p>`
-    ).join('');
+    // Procesar con marcadores de hablante en HTML para Word
+    const lines = t.split('\n');
+    let bodyHtml = '';
+    lines.forEach(line => {
+      const trimmed = line.trim();
+      if (!trimmed) return;
+      if (trimmed === 'TERAPEUTA:' || trimmed === 'PACIENTE:') {
+        const color = trimmed === 'TERAPEUTA:' ? '#a85e30' : '#7a9b7c';
+        bodyHtml += `<p style="margin:14pt 0 4pt;font-weight:bold;color:${color};font-size:10pt;letter-spacing:1pt;">${trimmed}</p>`;
+      } else {
+        bodyHtml += `<p style="margin:0 0 8pt;">${trimmed.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</p>`;
+      }
+    });
     const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${title}</title>
 <style>body{font-family:Calibri,sans-serif;font-size:11pt;line-height:1.5;}h1{font-size:18pt;}.meta{color:#666;font-size:10pt;margin-bottom:16pt;}</style>
-</head><body><h1>${title}</h1><div class="meta">${date}</div>${ps}</body></html>`;
+</head><body><h1>${title}</h1><div class="meta">${date}</div>${bodyHtml}</body></html>`;
     downloadBlob(new Blob(['\ufeff', html], { type: 'application/msword' }), getFilename('doc'));
     showToast('Descargado como Word');
     haptic();
@@ -2783,13 +2727,37 @@
     doc.text(new Date().toLocaleString('es-PE'), m, 80);
     doc.setTextColor(0); doc.setFontSize(11);
     let y = 110;
-    t.split(/\n\n+/).forEach(p => {
-      const lines = doc.splitTextToSize(p, mw);
-      lines.forEach(l => {
+
+    // Procesar línea por línea con marcadores
+    const lines = t.split('\n');
+    lines.forEach(line => {
+      const trimmed = line.trim();
+      if (!trimmed) { y += 8; return; }
+      if (trimmed === 'TERAPEUTA:') {
         if (y > ph - m) { doc.addPage(); y = m; }
-        doc.text(l, m, y); y += 16;
-      });
-      y += 8;
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
+        doc.setTextColor(168, 94, 48);
+        y += 8;
+        doc.text(trimmed, m, y);
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(11);
+        doc.setTextColor(0);
+        y += 16;
+      } else if (trimmed === 'PACIENTE:') {
+        if (y > ph - m) { doc.addPage(); y = m; }
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
+        doc.setTextColor(122, 155, 124);
+        y += 8;
+        doc.text(trimmed, m, y);
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(11);
+        doc.setTextColor(0);
+        y += 16;
+      } else {
+        const wrapped = doc.splitTextToSize(trimmed, mw);
+        wrapped.forEach(l => {
+          if (y > ph - m) { doc.addPage(); y = m; }
+          doc.text(l, m, y); y += 16;
+        });
+      }
     });
     doc.save(getFilename('pdf'));
     showToast('Descargado como PDF');
@@ -2802,6 +2770,12 @@
     els.transcript.classList.add('empty');
     updateStats();
     haptic();
+  });
+
+  // Botón "Nueva sesión" en estado finalizado
+  els.btnNewRecording.addEventListener('click', () => {
+    newSession();
+    setTimeout(() => startRecording(), 200);
   });
 
   // ============ WAKE LOCK ============
